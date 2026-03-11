@@ -29,6 +29,7 @@ body {
 
 :lang(ko) {
   font-family: var(--font-apple-sd-gothic-neo-bold), sans-serif;
+  font-size: 1.1em;
 }
 
 .font-gotham-bold {
