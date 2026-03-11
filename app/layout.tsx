@@ -22,6 +22,9 @@ const appleSdGothicNeoBold = localFont({
 export const metadata: Metadata = {
   title: "thezaratust",
   description: "Artist archive and portfolio built with Next.js",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
