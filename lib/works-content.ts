@@ -145,7 +145,7 @@ function parseYamlFile(filePath: string) {
       }
 
       if (indent > 0) {
-        const nextIndent = descriptionIndent ?? indent;
+        const nextIndent: number = descriptionIndent ?? indent;
         descriptionIndent = nextIndent;
         descriptionLines.push(rawLine.slice(nextIndent));
         continue;
