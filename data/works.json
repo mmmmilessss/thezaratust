@@ -1,0 +1,32 @@
+[
+  {
+    "title": "DON'T TRUST US",
+    "year": 2026,
+    "type": "music",
+    "slug": "dont-trust-us",
+    "thumbnail": "/images/donttrustus.jpg",
+    "images": [
+      "/images/donttrustus.jpg"
+    ],
+    "description": "A music work exploring control, distrust, and the unstable surface of public identity."
+  },
+  {
+    "title": "PHOTO SERIES 01",
+    "year": 2025,
+    "type": "photography",
+    "slug": "photo-series-01",
+    "thumbnail": "/images/photo1.jpg",
+    "images": [
+      "/images/photo1.jpg"
+    ],
+    "description": "A photography series built around atmosphere, distance, and fragmented portrait studies."
+  },
+  {
+    "title": "FILM PROJECT",
+    "year": 2024,
+    "type": "film",
+    "slug": "film-project",
+    "thumbnail": "/images/film.jpg",
+    "description": "A moving image project focused on memory, pacing, and cinematic repetition."
+  }
+]
