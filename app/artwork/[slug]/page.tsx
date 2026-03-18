@@ -1,6 +1,8 @@
 import { getAllWorkSlugs, getWorkBySlug } from "@/lib/works-content";
 import MusicArtworkLaunch from "@/components/MusicArtworkLaunch";
 import PhotographyArtworkLayout from "@/components/PhotographyArtworkLayout";
+import { isAssignedProject, slugifyProjectName } from "@/lib/works";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 /* eslint-disable @next/next/no-img-element */
@@ -18,6 +20,10 @@ const platformLabels = [
 
 function getMusicMetaLabel(format: string | undefined, displayDate: string) {
   return format ? `${format.toUpperCase()} · ${displayDate}` : displayDate;
+}
+
+function getArtworkMetaLabel(displayDate: string) {
+  return displayDate;
 }
 
 function getSpotifyEmbedUrl(spotifyUrl?: string) {
@@ -62,6 +68,33 @@ function getSoundCloudEmbedUrl(soundCloudUrl?: string) {
   }
 }
 
+function getYouTubeEmbedUrl(youtubeUrl?: string) {
+  if (!youtubeUrl) {
+    return null;
+  }
+
+  try {
+    const url = new URL(youtubeUrl);
+    let videoId: string | null = null;
+
+    if (url.hostname === "youtu.be") {
+      videoId = url.pathname.replace(/^\/+/, "") || null;
+    } else if (url.hostname.includes("youtube.com")) {
+      if (url.pathname.startsWith("/watch")) {
+        videoId = url.searchParams.get("v");
+      } else if (url.pathname.startsWith("/embed/")) {
+        videoId = url.pathname.split("/")[2] ?? null;
+      } else if (url.pathname.startsWith("/shorts/")) {
+        videoId = url.pathname.split("/")[2] ?? null;
+      }
+    }
+
+    return videoId ? `https://www.youtube.com/embed/${videoId}?vq=hd1080` : null;
+  } catch {
+    return null;
+  }
+}
+
 export function generateStaticParams() {
   return getAllWorkSlugs().map((slug) => ({ slug }));
 }
@@ -80,18 +113,76 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
   const availableLinks = platformLabels.filter(([key]) => work.links?.[key]);
   const isMusicWork = work.type === "music" && availableLinks.length > 0;
   const isPhotographyWork = work.type === "photography";
+  const isVideoWork = work.type === "video" || work.type === "film";
   const spotifyEmbedUrl = getSpotifyEmbedUrl(work.links?.spotify);
   const soundCloudEmbedUrl = spotifyEmbedUrl ? null : getSoundCloudEmbedUrl(work.links?.soundcloud);
+  const youTubeEmbedUrl = getYouTubeEmbedUrl(work.links?.youtube);
+  const projectName = isAssignedProject(work.project) ? work.project : null;
+  const projectHref = projectName ? `/projects/${slugifyProjectName(projectName)}` : null;
+  const baseMetaLabel =
+    work.type === "music"
+      ? getMusicMetaLabel(work.format, work.displayDate)
+      : getArtworkMetaLabel(work.displayDate);
+  const metadataLine = (
+    <>
+      <span>{baseMetaLabel}</span>
+      {projectName && projectHref ? (
+        <>
+          <span> · </span>
+          <Link href={projectHref} className="hover:opacity-100">
+            {projectName}
+          </Link>
+        </>
+      ) : null}
+    </>
+  );
 
   if (isPhotographyWork) {
     return (
       <PhotographyArtworkLayout
         type={work.type}
         title={work.title}
-        date={work.displayDate}
+        metadata={metadataLine}
         description={work.description}
         images={availableImages}
       />
+    );
+  }
+
+  if (isVideoWork) {
+    return (
+      <main className="px-6 py-16 sm:px-10 sm:py-20 lg:px-20">
+        <div className="space-y-10">
+          <div className="max-w-3xl">
+            <p className="mb-3 text-xs uppercase tracking-[0.24em] font-gotham-medium opacity-50 sm:text-sm">
+              {work.type.toUpperCase()}
+            </p>
+            <h1 className="mb-4 text-lg font-gotham-bold sm:text-xl">{work.title}</h1>
+            <div className="text-xs font-gotham-medium opacity-60 sm:text-sm">{metadataLine}</div>
+          </div>
+
+          {youTubeEmbedUrl ? (
+            <div className="w-full">
+              <iframe
+                src={youTubeEmbedUrl}
+                title={`${work.title} video player`}
+                width="100%"
+                height="720"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                loading="lazy"
+                className="block w-full border-0"
+              />
+            </div>
+          ) : null}
+
+          {work.description ? (
+            <p className="max-w-3xl whitespace-pre-line text-xs leading-6 font-gotham-medium sm:text-sm sm:leading-7">
+              {work.description}
+            </p>
+          ) : null}
+        </div>
+      </main>
     );
   }
 
@@ -130,11 +221,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
             {work.type}
           </p>
           <h1 className="mb-4 text-lg font-gotham-bold sm:text-xl">{work.title}</h1>
-          <p className="mb-8 text-xs font-gotham-medium opacity-60 sm:text-sm">
-            {work.type === "music"
-              ? getMusicMetaLabel(work.format, work.displayDate)
-              : work.displayDate}
-          </p>
+          <div className="mb-8 text-xs font-gotham-medium opacity-60 sm:text-sm">{metadataLine}</div>
           {work.description ? (
             <p className="max-w-xl whitespace-pre-line text-xs leading-6 font-gotham-medium sm:text-sm sm:leading-7">
               {work.description}

@@ -241,16 +241,42 @@ function getArtworkImages(slug: string, files: string[]) {
   return files.map((fileName) => `/works-media/${slug}/${fileName}`);
 }
 
+function getYouTubeVideoId(youtubeUrl?: string) {
+  if (!youtubeUrl) {
+    return null;
+  }
+
+  try {
+    const url = new URL(youtubeUrl);
+
+    if (url.hostname === "youtu.be") {
+      return url.pathname.replace(/^\/+/, "") || null;
+    }
+
+    if (url.hostname.includes("youtube.com")) {
+      return url.searchParams.get("v");
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
 function getArtworkThumbnail({
+  type,
   slug,
   imageFiles,
   appleMusicUrl,
   soundCloudUrl,
+  youtubeUrl,
 }: {
+  type: WorkCategory;
   slug: string;
   imageFiles: string[];
   appleMusicUrl?: string;
   soundCloudUrl?: string;
+  youtubeUrl?: string;
 }) {
   const localCoverFileName = getLocalCoverFileName(imageFiles);
 
@@ -264,6 +290,14 @@ function getArtworkThumbnail({
 
   if (soundCloudUrl) {
     return `/works-soundcloud-cover/${slug}`;
+  }
+
+  if (type === "video" || type === "film") {
+    const youTubeVideoId = getYouTubeVideoId(youtubeUrl);
+
+    if (youTubeVideoId) {
+      return `/works-youtube-thumbnail/${youTubeVideoId}`;
+    }
   }
 
   const firstImage = imageFiles[0];
@@ -284,13 +318,15 @@ function parseWorkFolder(folderName: string, sortOrder: number) {
   const imageFiles = getArtworkImageFileNames(folderPath);
   const images = getArtworkImages(slug, imageFiles);
   const thumbnail = getArtworkThumbnail({
+    type: parsed.type,
     slug,
     imageFiles,
     appleMusicUrl: parsed.links?.apple,
     soundCloudUrl: parsed.links?.soundcloud,
+    youtubeUrl: parsed.links?.youtube,
   });
 
-  if (!thumbnail) {
+  if (!thumbnail && parsed.type !== "video" && parsed.type !== "film") {
     throw new Error(`Artwork "${slug}" must contain a cover image.`);
   }
 
@@ -306,7 +342,7 @@ function parseWorkFolder(folderName: string, sortOrder: number) {
     year: parsedDate.year,
     project: parsed.project,
     description: parsed.description,
-    thumbnail,
+    thumbnail: thumbnail ?? "",
     images,
     links: parsed.links,
     sortDateValue: parsedDate.sortDateValue,

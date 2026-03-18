@@ -1,5 +1,19 @@
 import type { ArchiveSort, Work } from "@/types/work";
 
+export function isAssignedProject(project?: string) {
+  return Boolean(project && project.toLowerCase() !== "none");
+}
+
+export function slugifyProjectName(projectName: string) {
+  return projectName
+    .trim()
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
 export function sortWorks(items: Work[], sort: ArchiveSort) {
   const nextItems = [...items];
 
@@ -37,15 +51,17 @@ export function groupWorksByYear(items: Work[]) {
 
 export function groupWorksByProject(items: Work[]) {
   return items.reduce<Record<string, Work[]>>((groups, work) => {
-    if (!work.project) {
+    if (!isAssignedProject(work.project)) {
       return groups;
     }
 
-    if (!groups[work.project]) {
-      groups[work.project] = [];
+    const projectName = work.project!;
+
+    if (!groups[projectName]) {
+      groups[projectName] = [];
     }
 
-    groups[work.project].push(work);
+    groups[projectName].push(work);
 
     return groups;
   }, {});

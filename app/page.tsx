@@ -60,7 +60,7 @@ export default function HomePage() {
           </div>
           <WorkGrid
             works={latestWorks}
-            showMetaOnHover
+            mode="hover"
             className="md:grid-cols-3 lg:grid-cols-3"
           />
         </section>

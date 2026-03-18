@@ -5,28 +5,28 @@ import WorkCard from "@/components/WorkCard";
 type WorkGridProps = {
   works: Work[];
   className?: string;
-  showMetaOnHover?: boolean;
   layout?: "masonry" | "grid";
+  mode?: "hover" | "static";
 };
 
 export default function WorkGrid({
   works,
   className,
-  showMetaOnHover = false,
   layout = "masonry",
+  mode = "static",
 }: WorkGridProps) {
   const cards = works.map((work) => (
     <WorkCard
       key={work.slug}
       work={work}
-      showMetaOnHover={showMetaOnHover}
+      mode={mode}
     />
   ));
 
   if (layout === "grid") {
     const layoutClassName = className
-      ? `grid grid-cols-2 gap-x-6 gap-y-6 lg:grid-cols-4 ${className}`
-      : "grid grid-cols-2 gap-x-6 gap-y-6 lg:grid-cols-4";
+      ? `grid grid-cols-2 gap-x-6 gap-y-6 md:grid-cols-3 lg:grid-cols-4 ${className}`
+      : "grid grid-cols-2 gap-x-6 gap-y-6 md:grid-cols-3 lg:grid-cols-4";
 
     return <div className={layoutClassName}>{cards}</div>;
   }

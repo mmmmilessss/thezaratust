@@ -5,24 +5,26 @@ import type { Work } from "@/types/work";
 
 type WorkCardProps = {
   work: Work;
-  showMetaOnHover?: boolean;
+  mode?: "hover" | "static";
 };
 
 export default function WorkCard({
   work,
-  showMetaOnHover = false,
+  mode = "static",
 }: WorkCardProps) {
+  const isHoverMode = mode === "hover";
+
   return (
     <Link href={`/artwork/${work.slug}`} className="block">
-      <article className="group">
-        <div className="relative">
+      <article className={isHoverMode ? "group" : undefined}>
+        <div className="relative overflow-hidden">
           <img
             src={work.thumbnail}
             alt={`${work.title} thumbnail`}
-            className="block h-auto max-h-[400px] w-auto max-w-full object-contain"
+            className="block h-full w-full object-cover"
           />
 
-          {showMetaOnHover ? (
+          {isHoverMode ? (
             <div className="absolute inset-0 flex flex-col justify-end bg-black/0 p-4 opacity-0 transition group-hover:bg-black/35 group-hover:opacity-100">
               <p className="text-xs font-gotham-bold sm:text-sm">{work.title}</p>
               <p className="text-xs font-gotham-medium opacity-60 sm:text-sm">{work.displayDate}</p>
@@ -30,8 +32,8 @@ export default function WorkCard({
           ) : null}
         </div>
 
-        {showMetaOnHover ? null : (
-          <div className="pt-3 transition group-hover:opacity-60">
+        {isHoverMode ? null : (
+          <div className="pt-3">
             <p className="text-xs font-gotham-bold sm:text-sm">{work.title}</p>
             <p className="text-xs font-gotham-medium opacity-60 sm:text-sm">{work.displayDate}</p>
           </div>

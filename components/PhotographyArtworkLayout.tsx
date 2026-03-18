@@ -5,7 +5,7 @@ import MasonryGrid from "@/components/MasonryGrid";
 type PhotographyArtworkLayoutProps = {
   type: string;
   title: string;
-  date: string;
+  metadata: React.ReactNode;
   description?: string;
   images: string[];
 };
@@ -13,7 +13,7 @@ type PhotographyArtworkLayoutProps = {
 export default function PhotographyArtworkLayout({
   type,
   title,
-  date,
+  metadata,
   description,
   images,
 }: PhotographyArtworkLayoutProps) {
@@ -28,7 +28,7 @@ export default function PhotographyArtworkLayout({
             {type}
           </p>
           <h1 className="mb-4 text-lg font-gotham-bold sm:text-xl">{title}</h1>
-          <p className="mb-8 text-xs font-gotham-medium opacity-60 sm:text-sm">{date}</p>
+          <div className="mb-8 text-xs font-gotham-medium opacity-60 sm:text-sm">{metadata}</div>
           {description ? (
             <p className="max-w-xl whitespace-pre-line text-xs leading-6 font-gotham-medium sm:text-sm sm:leading-7">
               {description}
