@@ -46,7 +46,7 @@ export default function AboutPage() {
         </div>
 
         <div className="mb-14 max-w-2xl space-y-8 text-[0.65rem] leading-5 font-gotham-medium sm:text-xs sm:leading-6">
-          <div className="space-y-4 normal-case">
+          <div className="space-y-4 normal-case tracking-[0.02em]">
             <p>
               ZARATUST is the multidisciplinary creative practice of Park Geon
               Woo, spanning sound, moving image, photography, and related forms.
