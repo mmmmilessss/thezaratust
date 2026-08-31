@@ -49,7 +49,9 @@ export default function AboutPage() {
           <div className="space-y-4 normal-case tracking-[0.02em]">
             <p>
               ZARATUST is the multidisciplinary creative practice of PARK GEON
-              WOO, spanning sound, moving image, photography, and related forms.
+              WOO,
+              <br />
+              spanning sound, moving image, photography, and related forms.
             </p>
             <p>Music is released under the name CRYSTYN.</p>
             <p>Based in Seoul, South Korea.</p>
@@ -58,6 +60,7 @@ export default function AboutPage() {
           <div lang="ko" className="space-y-4 [&_p]:!text-[13px] [&_p]:leading-5">
             <p>
               ZARATUST는 박건우의 여러 매체를 넘나드는 창작 활동으로,
+              <br />
               사운드, 영상, 사진을 비롯한 다양한 시각·청각 작업을 전개한다.
             </p>
             <p>음악은 CRYSTYN이라는 이름으로 활동한다.</p>
