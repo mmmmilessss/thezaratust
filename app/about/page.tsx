@@ -39,7 +39,7 @@ export default function AboutPage() {
     <main className="px-6 py-16 sm:px-10 sm:py-20 lg:px-12 lg:py-24">
       <section className="max-w-3xl">
         <div className="mb-14 space-y-2">
-          <p className="text-xl font-gotham-bold sm:text-2xl">EXPLORING BEAUTY.</p>
+          <p className="text-xl font-gotham-bold normal-case sm:text-2xl">A study of aesthetics</p>
           <p lang="ko" className="font-gotham-medium">
             미에 대한 탐구.
           </p>

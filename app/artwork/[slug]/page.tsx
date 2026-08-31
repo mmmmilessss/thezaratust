@@ -1,8 +1,14 @@
-import { getAllWorkSlugs, getWorkBySlug } from "@/lib/works-content";
+import {
+  getAllWorkSlugs,
+  getWorkBySlug,
+  getWorksByCategory,
+} from "@/lib/works-content";
+import ArtworkNavigation from "@/components/ArtworkNavigation";
 import MusicArtworkLaunch from "@/components/MusicArtworkLaunch";
 import PhotographyArtworkLayout from "@/components/PhotographyArtworkLayout";
 import { isAssignedProject, slugifyProjectName } from "@/lib/works";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 /* eslint-disable @next/next/no-img-element */
@@ -103,6 +109,45 @@ export function generateStaticParams() {
   return getAllWorkSlugs().map((slug) => ({ slug }));
 }
 
+export async function generateMetadata({
+  params,
+}: ArtworkPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const work = getWorkBySlug(slug);
+
+  if (!work) {
+    return {};
+  }
+
+  const title = `${work.title} — ZARATUST`;
+  const description =
+    work.description || `${work.type.toUpperCase()} by ZARATUST.`;
+
+  return {
+    title: work.title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      images: [
+        {
+          url: work.thumbnail,
+          width: work.thumbnailWidth,
+          height: work.thumbnailHeight,
+          alt: work.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [work.thumbnail],
+    },
+  };
+}
+
 export default async function ArtworkPage({ params }: ArtworkPageProps) {
   const { slug } = await params;
   const work = getWorkBySlug(slug);
@@ -123,6 +168,19 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
   const youTubeEmbedUrl = getYouTubeEmbedUrl(work.links?.youtube);
   const projectName = isAssignedProject(work.project) ? work.project : null;
   const projectHref = projectName ? `/projects/${slugifyProjectName(projectName)}` : null;
+  const categoryWorks = getWorksByCategory(work.type);
+  const categoryIndex = categoryWorks.findIndex(
+    (categoryWork) => categoryWork.slug === work.slug,
+  );
+  const previousWork =
+    categoryIndex > 0 ? categoryWorks[categoryIndex - 1] : undefined;
+  const nextWork =
+    categoryIndex >= 0 && categoryIndex < categoryWorks.length - 1
+      ? categoryWorks[categoryIndex + 1]
+      : undefined;
+  const artworkNavigation = (
+    <ArtworkNavigation previous={previousWork} next={nextWork} />
+  );
   const categoryLink = (
     <Link
       href={`/work/${work.type}`}
@@ -157,6 +215,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
         metadata={metadataLine}
         description={work.description}
         images={availableImages}
+        navigation={artworkNavigation}
       />
     );
   }
@@ -194,6 +253,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
             </p>
           ) : null}
         </div>
+        {artworkNavigation}
       </main>
     );
   }
@@ -205,6 +265,8 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
           {isMusicWork ? (
             <MusicArtworkLaunch
               image={mainImage}
+              imageWidth={work.thumbnailWidth}
+              imageHeight={work.thumbnailHeight}
               title={work.title}
               links={work.links ?? {}}
             />
@@ -212,6 +274,8 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
             <img
               src={mainImage}
               alt={work.title}
+              loading="eager"
+              decoding="async"
               className="block max-h-[80vh] h-auto w-auto max-w-full"
             />
           )}
@@ -222,6 +286,8 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
                   key={`${work.slug}-${index}`}
                   src={image}
                   alt={`${work.title} image ${index + 2}`}
+                  loading="lazy"
+                  decoding="async"
                   className="block max-h-[80vh] h-auto w-auto max-w-full"
                 />
               ))
@@ -271,6 +337,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
           ) : null}
         </div>
       </div>
+      {artworkNavigation}
     </main>
   );
 }

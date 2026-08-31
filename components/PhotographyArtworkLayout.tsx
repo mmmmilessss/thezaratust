@@ -8,6 +8,7 @@ type PhotographyArtworkLayoutProps = {
   metadata: React.ReactNode;
   description?: string;
   images: string[];
+  navigation?: React.ReactNode;
 };
 
 export default function PhotographyArtworkLayout({
@@ -16,6 +17,7 @@ export default function PhotographyArtworkLayout({
   metadata,
   description,
   images,
+  navigation,
 }: PhotographyArtworkLayoutProps) {
   const heroImage = images[0];
   const galleryImages = images.slice(1);
@@ -41,6 +43,8 @@ export default function PhotographyArtworkLayout({
             <img
               src={heroImage}
               alt={`${title} image 1`}
+              loading="eager"
+              decoding="async"
               className="block h-auto w-full"
             />
           </div>
@@ -54,12 +58,16 @@ export default function PhotographyArtworkLayout({
               key={`${title}-gallery-${index}`}
               src={image}
               alt={`${title} image ${index + 2}`}
+              loading="lazy"
+              decoding="async"
               className="block h-auto w-full"
             />
           ))}
           className="grid grid-cols-2 items-start gap-4 sm:gap-6 lg:grid-cols-3"
         />
       ) : null}
+
+      {navigation}
     </main>
   );
 }

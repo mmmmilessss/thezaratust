@@ -118,6 +118,51 @@ function getLocalCoverFileName(files: string[]) {
   ).find(Boolean);
 }
 
+function getJpegDimensions(filePath: string) {
+  const file = readFileSync(filePath);
+
+  if (file.length < 4 || file[0] !== 0xff || file[1] !== 0xd8) {
+    return null;
+  }
+
+  const startOfFrameMarkers = new Set([
+    0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce,
+    0xcf,
+  ]);
+  let offset = 2;
+
+  while (offset + 8 < file.length) {
+    if (file[offset] !== 0xff) {
+      offset += 1;
+      continue;
+    }
+
+    const marker = file[offset + 1];
+
+    if (startOfFrameMarkers.has(marker)) {
+      return {
+        height: file.readUInt16BE(offset + 5),
+        width: file.readUInt16BE(offset + 7),
+      };
+    }
+
+    if (marker === 0xd8 || marker === 0xd9) {
+      offset += 2;
+      continue;
+    }
+
+    const segmentLength = file.readUInt16BE(offset + 2);
+
+    if (segmentLength < 2) {
+      break;
+    }
+
+    offset += segmentLength + 2;
+  }
+
+  return null;
+}
+
 function parseYamlFile(filePath: string) {
   const content = readFileSync(filePath, "utf8");
   const lines = content.split(/\r?\n/);
@@ -317,6 +362,7 @@ function parseWorkFolder(folderName: string, sortOrder: number) {
 
   const imageFiles = getArtworkImageFileNames(folderPath);
   const images = getArtworkImages(slug, imageFiles);
+  const localCoverFileName = getLocalCoverFileName(imageFiles);
   const thumbnail = getArtworkThumbnail({
     type: parsed.type,
     slug,
@@ -331,6 +377,15 @@ function parseWorkFolder(folderName: string, sortOrder: number) {
   }
 
   const parsedDate = parseArtworkDate(parsed.date);
+  const localThumbnailDimensions = localCoverFileName
+    ? getJpegDimensions(path.join(folderPath, localCoverFileName))
+    : null;
+  const fallbackThumbnailDimensions =
+    parsed.type === "video" || parsed.type === "film"
+      ? { width: 1280, height: 720 }
+      : { width: 1000, height: 1000 };
+  const thumbnailDimensions =
+    localThumbnailDimensions ?? fallbackThumbnailDimensions;
 
   return {
     slug,
@@ -343,6 +398,8 @@ function parseWorkFolder(folderName: string, sortOrder: number) {
     project: parsed.project,
     description: parsed.description,
     thumbnail: thumbnail ?? "",
+    thumbnailWidth: thumbnailDimensions.width,
+    thumbnailHeight: thumbnailDimensions.height,
     images,
     links: parsed.links,
     sortDateValue: parsedDate.sortDateValue,

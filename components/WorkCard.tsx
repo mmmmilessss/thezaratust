@@ -1,7 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Work } from "@/types/work";
-
-/* eslint-disable @next/next/no-img-element */
 
 type WorkCardProps = {
   work: Work;
@@ -18,16 +17,22 @@ export default function WorkCard({
     <Link href={`/artwork/${work.slug}`} className="block">
       <article className={isHoverMode ? "group" : undefined}>
         <div className="relative overflow-hidden">
-          <img
+          <Image
             src={work.thumbnail}
             alt={`${work.title} thumbnail`}
-            className="block h-full w-full object-cover"
+            width={work.thumbnailWidth}
+            height={work.thumbnailHeight}
+            sizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 33vw"
+            loading="lazy"
+            className="block h-auto w-full"
           />
 
           {isHoverMode ? (
             <div className="absolute inset-0 flex flex-col justify-end bg-black/0 p-4 opacity-0 transition group-hover:bg-black/35 group-hover:opacity-100">
               <p className="text-xs font-gotham-bold sm:text-sm">{work.title}</p>
-              <p className="text-xs font-gotham-medium opacity-60 sm:text-sm">{work.displayDate}</p>
+              <p className="text-xs font-gotham-medium opacity-60 sm:text-sm">
+                {work.type.toUpperCase()} · {work.displayDate}
+              </p>
             </div>
           ) : null}
         </div>
@@ -35,7 +40,9 @@ export default function WorkCard({
         {isHoverMode ? null : (
           <div className="pt-3">
             <p className="text-xs font-gotham-bold sm:text-sm">{work.title}</p>
-            <p className="text-xs font-gotham-medium opacity-60 sm:text-sm">{work.displayDate}</p>
+            <p className="text-xs font-gotham-medium opacity-60 sm:text-sm">
+              {work.type.toUpperCase()} · {work.displayDate}
+            </p>
           </div>
         )}
       </article>

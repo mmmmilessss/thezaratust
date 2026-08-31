@@ -20,8 +20,12 @@ const appleSdGothicNeoBold = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "thezaratust",
-  description: "Artist archive and portfolio built with Next.js",
+  metadataBase: new URL("https://www.zaratust.com"),
+  title: {
+    default: "ZARATUST",
+    template: "%s | ZARATUST",
+  },
+  description: "Music, film, photography, and visual work by ZARATUST.",
   icons: {
     icon: "/favicon.ico",
   },

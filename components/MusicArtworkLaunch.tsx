@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { WorkLinks } from "@/types/work";
-
-/* eslint-disable @next/next/no-img-element */
 
 type MusicArtworkLaunchProps = {
   image: string;
+  imageWidth: number;
+  imageHeight: number;
   title: string;
   links: WorkLinks;
 };
@@ -20,6 +21,8 @@ const platformLabels = [
 
 export default function MusicArtworkLaunch({
   image,
+  imageWidth,
+  imageHeight,
   title,
   links,
 }: MusicArtworkLaunchProps) {
@@ -35,9 +38,12 @@ export default function MusicArtworkLaunch({
         aria-expanded={isOpen}
         aria-label={`Open listening platforms for ${title}`}
       >
-        <img
+        <Image
           src={image}
           alt={title}
+          width={imageWidth}
+          height={imageHeight}
+          sizes="(max-width: 767px) 100vw, 50vw"
           className="block h-auto max-h-[80vh] w-auto max-w-full"
         />
         <span className="absolute inset-0 flex items-center justify-center bg-black/0 text-sm font-gotham-bold opacity-0 transition group-hover:bg-black/35 group-hover:opacity-100">

@@ -27,6 +27,8 @@ export type Work = {
   slug: string;
   project?: string;
   thumbnail: string;
+  thumbnailWidth: number;
+  thumbnailHeight: number;
   description?: string;
   images?: string[];
   links?: WorkLinks;
