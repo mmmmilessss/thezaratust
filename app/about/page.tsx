@@ -24,7 +24,7 @@ const socialLinks = [
   },
   {
     label: "Apple Music",
-    href: "https://music.apple.com/kr/artist/miles-zaratust/1879705589",
+    href: "https://music.apple.com/kr/artist/crystyn/1879705589",
     iconSrc: "/icons/applemusic.svg",
   },
   {
