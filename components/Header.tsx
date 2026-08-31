@@ -78,7 +78,7 @@ export default function Header() {
         <div className="flex justify-start">
           {shouldShowMenuIcon ? (
             <button
-              className={`cursor-pointer text-3xl leading-none [filter:drop-shadow(0_2px_7px_rgba(0,0,0,0.9))] ${isHomeHeroVisible ? "text-white" : ""}`}
+              className={`cursor-pointer text-3xl leading-none transition-opacity hover:opacity-60 [filter:drop-shadow(0_2px_7px_rgba(0,0,0,0.9))] ${isHomeHeroVisible ? "text-white" : ""}`}
               onClick={() => setOpen((current) => !current)}
               aria-expanded={open}
               aria-label="Toggle navigation menu"
@@ -148,7 +148,7 @@ export default function Header() {
           <div className="flex h-full flex-col">
             <div className="mb-12 flex justify-start">
               <button
-                className="cursor-pointer text-3xl leading-none text-white [filter:drop-shadow(0_2px_7px_rgba(0,0,0,0.9))]"
+                className="cursor-pointer text-3xl leading-none text-white transition-opacity hover:opacity-60 [filter:drop-shadow(0_2px_7px_rgba(0,0,0,0.9))]"
                 onClick={() => setOpen(false)}
                 aria-label="Close navigation menu"
               >
