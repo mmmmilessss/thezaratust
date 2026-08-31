@@ -62,7 +62,11 @@ function getSoundCloudEmbedUrl(soundCloudUrl?: string) {
       return null;
     }
 
-    return `https://w.soundcloud.com/player/?url=${encodeURIComponent(soundCloudUrl)}`;
+    const embedUrl = new URL("https://w.soundcloud.com/player/");
+    embedUrl.searchParams.set("url", soundCloudUrl);
+    embedUrl.searchParams.set("color", "#121212");
+
+    return embedUrl.toString();
   } catch {
     return null;
   }

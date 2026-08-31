@@ -103,7 +103,11 @@ export default function Header() {
               alt="thezaratust"
               width={160}
               height={64}
-              className={`h-16 object-contain [filter:drop-shadow(0_1px_4px_rgba(0,0,0,0.35))] ${isHomeHeroVisible ? "brightness-0 invert" : ""}`}
+              className={`h-16 object-contain ${
+                isHomePage && showDesktopHomeLogo
+                  ? "[filter:drop-shadow(0_1px_4px_rgba(0,0,0,0.50))]"
+                  : "[filter:drop-shadow(0_1px_4px_rgba(0,0,0,0.35))]"
+              } ${isHomeHeroVisible ? "brightness-0 invert" : ""}`}
             />
           </Link>
         </div>
