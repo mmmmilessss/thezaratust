@@ -41,6 +41,16 @@ const nextConfig: NextConfig = {
           "/artwork/film-tiny-thoughts-club-full-ep-listening-experience",
         permanent: true,
       },
+      {
+        source: "/projects/tiny-thougts-club",
+        destination: "/projects/tiny-thoughts-club",
+        statusCode: 301,
+      },
+      {
+        source: "/work/others",
+        destination: "/work",
+        statusCode: 301,
+      },
     ];
   },
 };

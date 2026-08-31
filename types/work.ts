@@ -3,7 +3,6 @@ export const WORK_CATEGORIES = [
   "film",
   "photography",
   "video",
-  "others",
 ] as const;
 
 export type WorkCategory = (typeof WORK_CATEGORIES)[number];
