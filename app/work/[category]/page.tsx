@@ -32,7 +32,7 @@ export default async function WorkCategoryPage({
         <h1 className="text-base sm:text-xl">{category.toUpperCase()}</h1>
       </section>
 
-      <WorkGrid works={works} className="lg:grid-cols-3" />
+      <WorkGrid works={works} className="lg:grid-cols-3" eagerFirst />
     </main>
   );
 }

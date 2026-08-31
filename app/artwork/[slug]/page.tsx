@@ -8,10 +8,9 @@ import MusicArtworkLaunch from "@/components/MusicArtworkLaunch";
 import PhotographyArtworkLayout from "@/components/PhotographyArtworkLayout";
 import { isAssignedProject, slugifyProjectName } from "@/lib/works";
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-
-/* eslint-disable @next/next/no-img-element */
 
 type ArtworkPageProps = {
   params: Promise<{ slug: string }>;
@@ -132,9 +131,9 @@ export async function generateMetadata({
       type: "article",
       images: [
         {
-          url: work.thumbnail,
-          width: work.thumbnailWidth,
-          height: work.thumbnailHeight,
+          url: `/artwork-og/${work.slug}`,
+          width: 1200,
+          height: 630,
           alt: work.title,
         },
       ],
@@ -143,7 +142,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: [work.thumbnail],
+      images: [`/artwork-og/${work.slug}`],
     },
   };
 }
@@ -156,8 +155,8 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
     notFound();
   }
 
-  const availableImages = Array.isArray(work.images) && work.images.length > 0 ? work.images : [work.thumbnail];
-  const mainImage = availableImages[0] ?? work.thumbnail;
+  const availableImages = Array.isArray(work.images) && work.images.length > 0 ? work.images : [{ src: work.thumbnail, width: work.thumbnailWidth, height: work.thumbnailHeight }];
+  const mainImage = availableImages[0] ?? { src: work.thumbnail, width: work.thumbnailWidth, height: work.thumbnailHeight };
   const detailImages = availableImages.slice(1);
   const availableLinks = platformLabels.filter(([key]) => work.links?.[key]);
   const isMusicWork = work.type === "music" && availableLinks.length > 0;
@@ -238,11 +237,10 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
                 src={youTubeEmbedUrl}
                 title={`${work.title} video player`}
                 width="100%"
-                height="720"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
                 loading="lazy"
-                className="block w-full border-0"
+                className="block aspect-video w-full border-0"
               />
             </div>
           ) : null}
@@ -264,30 +262,36 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
         <div className="space-y-6">
           {isMusicWork ? (
             <MusicArtworkLaunch
-              image={mainImage}
+              image={mainImage.src}
               imageWidth={work.thumbnailWidth}
               imageHeight={work.thumbnailHeight}
               title={work.title}
               links={work.links ?? {}}
             />
           ) : (
-            <img
-              src={mainImage}
+            <Image
+              src={mainImage.src}
               alt={work.title}
+              width={mainImage.width}
+              height={mainImage.height}
+              quality={88}
+              sizes="(max-width: 767px) calc(100vw - 3rem), 50vw"
               loading="eager"
-              decoding="async"
               className="block max-h-[80vh] h-auto w-auto max-w-full"
             />
           )}
 
           {detailImages.length > 0
-            ? detailImages.map((image, index) => (
-                <img
-                  key={`${work.slug}-${index}`}
-                  src={image}
+              ? detailImages.map((image, index) => (
+                <Image
+                  key={image.src}
+                  src={image.src}
                   alt={`${work.title} image ${index + 2}`}
+                  width={image.width}
+                  height={image.height}
+                  quality={88}
+                  sizes="(max-width: 767px) calc(100vw - 3rem), 50vw"
                   loading="lazy"
-                  decoding="async"
                   className="block max-h-[80vh] h-auto w-auto max-w-full"
                 />
               ))

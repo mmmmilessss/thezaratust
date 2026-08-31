@@ -7,6 +7,7 @@ import {
   type MusicFormat,
   type Work,
   type WorkCategory,
+  type WorkImage,
   type WorkLinks,
 } from "@/types/work";
 import { sortWorks } from "@/lib/works";
@@ -282,8 +283,18 @@ function parseYamlFile(filePath: string) {
   return result;
 }
 
-function getArtworkImages(slug: string, files: string[]) {
-  return files.map((fileName) => `/works-media/${slug}/${fileName}`);
+function getArtworkImages(slug: string, folderPath: string, files: string[]) {
+  return files.map((fileName) => {
+    const dimensions = getJpegDimensions(path.join(folderPath, fileName)) ?? {
+      width: 1600,
+      height: 1600,
+    };
+
+    return {
+      src: `/works-media/${slug}/${fileName}`,
+      ...dimensions,
+    } satisfies WorkImage;
+  });
 }
 
 function getYouTubeVideoId(youtubeUrl?: string) {
@@ -330,11 +341,11 @@ function getArtworkThumbnail({
   }
 
   if (appleMusicUrl) {
-    return `/works-apple-cover/${slug}`;
+    return `/works-apple-cover/${slug}?v=2`;
   }
 
   if (soundCloudUrl) {
-    return `/works-soundcloud-cover/${slug}?v=2`;
+    return `/works-soundcloud-cover/${slug}?v=3`;
   }
 
   if (type === "video" || type === "film") {
@@ -361,7 +372,7 @@ function parseWorkFolder(folderName: string, sortOrder: number) {
   }
 
   const imageFiles = getArtworkImageFileNames(folderPath);
-  const images = getArtworkImages(slug, imageFiles);
+  const images = getArtworkImages(slug, folderPath, imageFiles);
   const localCoverFileName = getLocalCoverFileName(imageFiles);
   const thumbnail = getArtworkThumbnail({
     type: parsed.type,

@@ -17,6 +17,12 @@ export type WorkLinks = Partial<{
 
 export type MusicFormat = "album" | "ep" | "single";
 
+export type WorkImage = {
+  src: string;
+  width: number;
+  height: number;
+};
+
 export type Work = {
   title: string;
   year: number;
@@ -30,7 +36,7 @@ export type Work = {
   thumbnailWidth: number;
   thumbnailHeight: number;
   description?: string;
-  images?: string[];
+  images?: WorkImage[];
   links?: WorkLinks;
   sortDateValue: number;
   sortOrder: number;

@@ -6,12 +6,14 @@ type WorkCardProps = {
   work: Work;
   mode?: "hover" | "static";
   eager?: boolean;
+  sizes?: string;
 };
 
 export default function WorkCard({
   work,
   mode = "static",
   eager = false,
+  sizes = "(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 33vw",
 }: WorkCardProps) {
   const isHoverMode = mode === "hover";
 
@@ -24,7 +26,7 @@ export default function WorkCard({
             alt={`${work.title} thumbnail`}
             width={work.thumbnailWidth}
             height={work.thumbnailHeight}
-            sizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 33vw"
+            sizes={sizes}
             loading={eager ? "eager" : "lazy"}
             className="block h-auto w-full"
           />

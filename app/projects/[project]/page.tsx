@@ -39,6 +39,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         <WorkGrid
           works={sortWorks(selectedProjectGroup[1], "newest")}
           className="lg:grid-cols-3"
+          eagerFirst
         />
       </section>
     </main>

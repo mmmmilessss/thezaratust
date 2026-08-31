@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { getWorkBySlug } from "@/lib/works-content";
+import sharp from "sharp";
+
+export const runtime = "nodejs";
 
 type RouteProps = {
   params: Promise<{
@@ -94,13 +97,17 @@ export async function GET(_request: Request, { params }: RouteProps) {
     return new NextResponse("Not found", { status: 404 });
   }
 
-  const contentType = imageResponse.headers.get("content-type") ?? "image/jpeg";
-  const imageBuffer = await imageResponse.arrayBuffer();
+  const imageBuffer = await sharp(Buffer.from(await imageResponse.arrayBuffer()))
+    .rotate()
+    .resize(1600, 1600, { fit: "inside", withoutEnlargement: true })
+    .jpeg({ quality: 90, mozjpeg: true })
+    .toBuffer();
 
-  return new NextResponse(imageBuffer, {
+  const body = imageBuffer.buffer.slice(imageBuffer.byteOffset, imageBuffer.byteOffset + imageBuffer.byteLength) as ArrayBuffer;
+  return new NextResponse(body, {
     headers: {
-      "Content-Type": contentType,
-      "Cache-Control": "public, max-age=86400, stale-while-revalidate=86400",
+      "Content-Type": "image/jpeg",
+      "Cache-Control": "public, max-age=86400, s-maxage=604800, stale-while-revalidate=604800",
     },
   });
 }

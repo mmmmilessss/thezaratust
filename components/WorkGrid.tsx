@@ -7,6 +7,7 @@ type WorkGridProps = {
   className?: string;
   layout?: "masonry" | "grid";
   mode?: "hover" | "static";
+  eagerFirst?: boolean;
 };
 
 export default function WorkGrid({
@@ -14,13 +15,18 @@ export default function WorkGrid({
   className,
   layout = "masonry",
   mode = "static",
+  eagerFirst = false,
 }: WorkGridProps) {
+  const sizes = layout === "grid"
+    ? "(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
+    : "(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 33vw";
   const cards = works.map((work, index) => (
     <WorkCard
       key={work.slug}
       work={work}
       mode={mode}
-      eager={index === 0}
+      eager={eagerFirst && index === 0}
+      sizes={sizes}
     />
   ));
 

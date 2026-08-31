@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    qualities: [75, 88, 90],
     localPatterns: [
       {
         pathname: "/logo.png",
@@ -14,10 +15,11 @@ const nextConfig: NextConfig = {
       },
       {
         pathname: "/works-apple-cover/**",
+        search: "?v=2",
       },
       {
         pathname: "/works-soundcloud-cover/**",
-        search: "?v=2",
+        search: "?v=3",
       },
       {
         pathname: "/works-youtube-thumbnail/**",

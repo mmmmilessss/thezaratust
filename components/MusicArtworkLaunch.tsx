@@ -43,7 +43,8 @@ export default function MusicArtworkLaunch({
           alt={title}
           width={imageWidth}
           height={imageHeight}
-          sizes="(max-width: 767px) 100vw, 50vw"
+          quality={90}
+          sizes="(max-width: 767px) calc(100vw - 3rem), min(50vw, 80vh)"
           loading="eager"
           className="block h-auto w-full"
         />
