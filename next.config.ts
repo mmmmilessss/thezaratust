@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
         pathname: "/images/**",
       },
       {
+        pathname: "/icons/**",
+      },
+      {
         pathname: "/works-media/**",
       },
       {

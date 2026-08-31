@@ -40,12 +40,12 @@ export default function AboutPage() {
       <section className="max-w-3xl">
         <div className="mb-8 space-y-2">
           <p className="text-2xl font-gotham-bold sm:text-3xl">EXPLORING BEAUTY.</p>
-          <p lang="ko" className="text-lg font-gotham-medium sm:text-xl">
+          <p lang="ko" className="!text-xl font-gotham-medium sm:!text-2xl">
             미에 대한 탐구.
           </p>
         </div>
 
-        <div className="mb-14 max-w-2xl space-y-8 text-xs leading-6 font-gotham-medium sm:text-sm sm:leading-7">
+        <div className="mb-14 max-w-2xl space-y-8 text-[0.65rem] leading-5 font-gotham-medium sm:text-xs sm:leading-6">
           <div className="space-y-4">
             <p>
               ZARATUST is the multidisciplinary creative practice of Park Geon

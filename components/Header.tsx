@@ -78,7 +78,7 @@ export default function Header() {
         <div className="flex justify-start">
           {shouldShowMenuIcon ? (
             <button
-              className={`text-3xl leading-none [filter:drop-shadow(0_1px_4px_rgba(0,0,0,0.35))] ${isHomeHeroVisible ? "text-white" : ""}`}
+              className={`cursor-pointer text-3xl leading-none [filter:drop-shadow(0_2px_7px_rgba(0,0,0,0.9))] ${isHomeHeroVisible ? "text-white" : ""}`}
               onClick={() => setOpen((current) => !current)}
               aria-expanded={open}
               aria-label="Toggle navigation menu"
@@ -104,11 +104,7 @@ export default function Header() {
               width={160}
               height={64}
               loading="eager"
-              className={`h-16 object-contain ${
-                isHomePage && showDesktopHomeLogo
-                  ? "[filter:drop-shadow(0_1px_4px_rgba(0,0,0,0.50))]"
-                  : "[filter:drop-shadow(0_1px_4px_rgba(0,0,0,0.35))]"
-              } ${isHomeHeroVisible ? "brightness-0 invert" : ""}`}
+              className={`h-16 object-contain [filter:drop-shadow(0_2px_7px_rgba(0,0,0,0.9))] ${isHomeHeroVisible ? "brightness-0 invert" : ""}`}
             />
           </Link>
         </div>
@@ -152,7 +148,7 @@ export default function Header() {
           <div className="flex h-full flex-col">
             <div className="mb-12 flex justify-start">
               <button
-                className="text-3xl leading-none text-white"
+                className="cursor-pointer text-3xl leading-none text-white [filter:drop-shadow(0_2px_7px_rgba(0,0,0,0.9))]"
                 onClick={() => setOpen(false)}
                 aria-label="Close navigation menu"
               >
