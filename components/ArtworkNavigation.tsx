@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 type ArtworkNavigationItem = {
   slug: string;
@@ -29,8 +30,9 @@ export default function ArtworkNavigation({
             href={`/artwork/${previous.slug}`}
             className="group inline-flex max-w-full flex-col gap-2 transition hover:opacity-60"
           >
-            <span className="text-[0.65rem] font-gotham-medium opacity-60 sm:text-xs">
-              ← PREVIOUS
+            <span className="inline-flex items-center gap-1.5 text-[0.65rem] font-gotham-medium opacity-60 sm:text-xs">
+              <ArrowLeft aria-hidden="true" size={14} strokeWidth={1.5} />
+              PREVIOUS
             </span>
             <span className="truncate text-xs font-gotham-bold sm:text-sm">
               {previous.title}
@@ -45,8 +47,9 @@ export default function ArtworkNavigation({
             href={`/artwork/${next.slug}`}
             className="group inline-flex max-w-full flex-col items-end gap-2 transition hover:opacity-60"
           >
-            <span className="text-[0.65rem] font-gotham-medium opacity-60 sm:text-xs">
-              NEXT →
+            <span className="inline-flex items-center gap-1.5 text-[0.65rem] font-gotham-medium opacity-60 sm:text-xs">
+              NEXT
+              <ArrowRight aria-hidden="true" size={14} strokeWidth={1.5} />
             </span>
             <span className="max-w-full truncate text-xs font-gotham-bold sm:text-sm">
               {next.title}
