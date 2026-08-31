@@ -1,11 +1,25 @@
 import NavigationLinks from "@/components/NavigationLinks";
 import WorkGrid from "@/components/WorkGrid";
-import { getLatestWorks } from "@/lib/works-content";
+import { getAllWorks } from "@/lib/works-content";
 import Link from "next/link";
 import Image from "next/image";
+import { ArrowRight } from "lucide-react";
+
+const SELECTED_WORK_SLUGS = [
+  "tiny-thoughts-club",
+  "film-the-free-trial",
+  "film-thuglife",
+  "acrobatic-001",
+  "light003",
+  "winter-vacation",
+] as const;
 
 export default function HomePage() {
-  const latestWorks = getLatestWorks(16);
+  const allWorks = getAllWorks();
+  const selectedWorks = SELECTED_WORK_SLUGS.flatMap((slug) => {
+    const work = allWorks.find((item) => item.slug === slug);
+    return work ? [work] : [];
+  });
 
   return (
     <main>
@@ -52,17 +66,20 @@ export default function HomePage() {
         </section>
 
         <section>
-          <div className="mb-12 flex items-center justify-between gap-4">
-            <h2 className="text-sm font-gotham-bold sm:text-lg">LATEST WORKS</h2>
-            <Link href="/archive" className="ml-auto text-right text-[0.65rem] tracking-wide hover:opacity-60 sm:text-sm">
-              VIEW ARCHIVE
-            </Link>
+          <div className="mb-12">
+            <h2 className="text-sm font-gotham-bold sm:text-lg">SELECTED WORKS</h2>
           </div>
           <WorkGrid
-            works={latestWorks}
+            works={selectedWorks}
             mode="hover"
             className="md:grid-cols-3 lg:grid-cols-3"
           />
+          <div className="mt-10 flex justify-end">
+            <Link href="/archive" className="inline-flex items-center gap-2 text-[0.65rem] tracking-wide transition hover:opacity-60 sm:text-sm">
+              VIEW FULL ARCHIVE
+              <ArrowRight aria-hidden="true" size={15} strokeWidth={1.5} />
+            </Link>
+          </div>
         </section>
       </div>
     </main>
