@@ -1,13 +1,7 @@
 import Link from "next/link";
 import { getAllWorks } from "@/lib/works-content";
 import { groupWorksByProject, slugifyProjectName } from "@/lib/works";
-
-const projectDetails: Record<string, { meta: string; premise: string }> = {
-  ACROBATIC: {
-    meta: "ONGOING SERIES · 2026—",
-    premise: "An ongoing portrait study of movement, tension, and the body in space.",
-  },
-};
+import { getProjectDetails } from "@/lib/project-details";
 
 export default function ProjectsPage() {
   const projectGroups = Object.entries(groupWorksByProject(getAllWorks())).sort(
@@ -22,27 +16,33 @@ export default function ProjectsPage() {
 
       <nav className="flex max-w-4xl flex-col">
         {projectGroups.map(([projectName]) => {
-          const details = projectDetails[projectName];
+          const details = getProjectDetails(projectName);
 
           return (
             <Link
               key={projectName}
               href={`/projects/${slugifyProjectName(projectName)}`}
-              className="group py-5 transition hover:opacity-60"
+              className="group py-5"
             >
-              <span className="block text-lg tracking-[0.18em] font-gotham-bold sm:text-2xl">
-                {projectName}
-              </span>
               {details ? (
-                <span className="mt-3 block max-w-xl space-y-1.5">
-                  <span className="block text-[0.6rem] tracking-[0.14em] font-gotham-medium opacity-60 sm:text-[0.7rem]">
-                    {details.meta}
+                <span className="grid max-w-2xl">
+                  <span className="[grid-area:1/1] transition-opacity duration-200 group-hover:opacity-0 group-focus-visible:opacity-0">
+                    <span className="block text-lg tracking-[0.18em] font-gotham-bold sm:text-2xl">
+                      {projectName}
+                    </span>
+                    <span className="mt-3 block text-xs tracking-[0.12em] font-gotham-medium opacity-65 sm:text-sm">
+                      {details.meta}
+                    </span>
                   </span>
-                  <span className="block text-[0.65rem] leading-5 tracking-[0.02em] font-gotham-medium normal-case opacity-75 sm:text-xs">
+                  <span className="flex [grid-area:1/1] items-center text-xs leading-6 tracking-[0.06em] font-gotham-medium opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 sm:text-sm">
                     {details.premise}
                   </span>
                 </span>
-              ) : null}
+              ) : (
+                <span className="block text-lg tracking-[0.18em] font-gotham-bold transition-opacity hover:opacity-60 sm:text-2xl">
+                  {projectName}
+                </span>
+              )}
             </Link>
           );
         })}
