@@ -3,7 +3,7 @@ import MasonryGrid from "@/components/MasonryGrid";
 /* eslint-disable @next/next/no-img-element */
 
 type PhotographyArtworkLayoutProps = {
-  type: string;
+  category: React.ReactNode;
   title: string;
   metadata: React.ReactNode;
   description?: string;
@@ -11,7 +11,7 @@ type PhotographyArtworkLayoutProps = {
 };
 
 export default function PhotographyArtworkLayout({
-  type,
+  category,
   title,
   metadata,
   description,
@@ -25,7 +25,7 @@ export default function PhotographyArtworkLayout({
       <section className="mb-10 grid gap-8 md:grid-cols-2 md:items-start md:gap-16">
         <div className="max-w-xl">
           <p className="mb-3 text-xs uppercase tracking-[0.24em] font-gotham-medium opacity-50 sm:text-sm">
-            {type}
+            {category}
           </p>
           <h1 className="mb-4 text-lg font-gotham-bold sm:text-xl">{title}</h1>
           <div className="mb-8 text-xs font-gotham-medium opacity-60 sm:text-sm">{metadata}</div>

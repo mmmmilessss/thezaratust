@@ -119,6 +119,14 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
   const youTubeEmbedUrl = getYouTubeEmbedUrl(work.links?.youtube);
   const projectName = isAssignedProject(work.project) ? work.project : null;
   const projectHref = projectName ? `/projects/${slugifyProjectName(projectName)}` : null;
+  const categoryLink = (
+    <Link
+      href={`/work/${work.type}`}
+      className="transition-opacity hover:opacity-60"
+    >
+      {work.type.toUpperCase()}
+    </Link>
+  );
   const baseMetaLabel =
     work.type === "music"
       ? getMusicMetaLabel(work.format, work.displayDate)
@@ -140,7 +148,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
   if (isPhotographyWork) {
     return (
       <PhotographyArtworkLayout
-        type={work.type}
+        category={categoryLink}
         title={work.title}
         metadata={metadataLine}
         description={work.description}
@@ -155,7 +163,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
         <div className="space-y-10">
           <div className="max-w-3xl">
             <p className="mb-3 text-xs uppercase tracking-[0.24em] font-gotham-medium opacity-50 sm:text-sm">
-              {work.type.toUpperCase()}
+              {categoryLink}
             </p>
             <h1 className="mb-4 text-lg font-gotham-bold sm:text-xl">{work.title}</h1>
             <div className="text-xs font-gotham-medium opacity-60 sm:text-sm">{metadataLine}</div>
@@ -218,7 +226,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
 
         <div>
           <p className="mb-3 text-xs uppercase tracking-[0.24em] font-gotham-medium opacity-50 sm:text-sm">
-            {work.type}
+            {categoryLink}
           </p>
           <h1 className="mb-4 text-lg font-gotham-bold sm:text-xl">{work.title}</h1>
           <div className="mb-8 text-xs font-gotham-medium opacity-60 sm:text-sm">{metadataLine}</div>
