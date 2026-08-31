@@ -40,7 +40,7 @@ export default function AboutPage() {
       <section className="max-w-3xl">
         <div className="mb-8 space-y-2">
           <p className="text-2xl font-gotham-bold sm:text-3xl">EXPLORING BEAUTY.</p>
-          <p lang="ko" className="!text-xl font-gotham-medium sm:!text-2xl">
+          <p lang="ko" className="!text-[20px] font-gotham-medium">
             미에 대한 탐구.
           </p>
         </div>
@@ -55,7 +55,7 @@ export default function AboutPage() {
             <p>Based in Seoul, South Korea.</p>
           </div>
 
-          <div lang="ko" className="space-y-4">
+          <div lang="ko" className="space-y-4 [&_p]:!text-[9px] [&_p]:leading-4">
             <p>
               ZARATUST는 박건우의 여러 매체를 넘나드는 창작 활동으로,
               사운드, 영상, 사진을 비롯한 다양한 시각·청각 작업을 전개한다.
