@@ -8,6 +8,7 @@ type WorkGridProps = {
   layout?: "masonry" | "grid";
   mode?: "hover" | "static";
   eagerFirst?: boolean;
+  dimOnHover?: boolean;
 };
 
 export default function WorkGrid({
@@ -16,6 +17,7 @@ export default function WorkGrid({
   layout = "masonry",
   mode = "static",
   eagerFirst = false,
+  dimOnHover = false,
 }: WorkGridProps) {
   const sizes = layout === "grid"
     ? "(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
@@ -27,6 +29,7 @@ export default function WorkGrid({
       mode={mode}
       eager={eagerFirst && index === 0}
       sizes={sizes}
+      dimOnHover={dimOnHover}
     />
   ));
 

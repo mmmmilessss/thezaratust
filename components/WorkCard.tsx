@@ -7,6 +7,7 @@ type WorkCardProps = {
   mode?: "hover" | "static";
   eager?: boolean;
   sizes?: string;
+  dimOnHover?: boolean;
 };
 
 export default function WorkCard({
@@ -14,12 +15,13 @@ export default function WorkCard({
   mode = "static",
   eager = false,
   sizes = "(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 33vw",
+  dimOnHover = false,
 }: WorkCardProps) {
   const isHoverMode = mode === "hover";
 
   return (
     <Link href={`/artwork/${work.slug}`} className="block">
-      <article className={isHoverMode ? "group" : undefined}>
+      <article className={isHoverMode || dimOnHover ? "group" : undefined}>
         <div className="relative overflow-hidden">
           <Image
             src={work.thumbnail}
@@ -28,7 +30,7 @@ export default function WorkCard({
             height={work.thumbnailHeight}
             sizes={sizes}
             loading={eager ? "eager" : "lazy"}
-            className="block h-auto w-full"
+            className={`block h-auto w-full ${dimOnHover ? "transition-opacity group-hover:opacity-60" : ""}`}
           />
 
           {isHoverMode ? (
