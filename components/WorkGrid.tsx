@@ -15,11 +15,12 @@ export default function WorkGrid({
   layout = "masonry",
   mode = "static",
 }: WorkGridProps) {
-  const cards = works.map((work) => (
+  const cards = works.map((work, index) => (
     <WorkCard
       key={work.slug}
       work={work}
       mode={mode}
+      eager={index === 0}
     />
   ));
 

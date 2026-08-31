@@ -103,6 +103,7 @@ export default function Header() {
               alt="thezaratust"
               width={160}
               height={64}
+              loading="eager"
               className={`h-16 object-contain ${
                 isHomePage && showDesktopHomeLogo
                   ? "[filter:drop-shadow(0_1px_4px_rgba(0,0,0,0.50))]"

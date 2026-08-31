@@ -5,11 +5,13 @@ import type { Work } from "@/types/work";
 type WorkCardProps = {
   work: Work;
   mode?: "hover" | "static";
+  eager?: boolean;
 };
 
 export default function WorkCard({
   work,
   mode = "static",
+  eager = false,
 }: WorkCardProps) {
   const isHoverMode = mode === "hover";
 
@@ -23,7 +25,7 @@ export default function WorkCard({
             width={work.thumbnailWidth}
             height={work.thumbnailHeight}
             sizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 33vw"
-            loading="lazy"
+            loading={eager ? "eager" : "lazy"}
             className="block h-auto w-full"
           />
 

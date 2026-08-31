@@ -334,7 +334,7 @@ function getArtworkThumbnail({
   }
 
   if (soundCloudUrl) {
-    return `/works-soundcloud-cover/${slug}`;
+    return `/works-soundcloud-cover/${slug}?v=2`;
   }
 
   if (type === "video" || type === "film") {

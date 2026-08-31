@@ -87,9 +87,7 @@ export async function GET(_request: Request, { params }: RouteProps) {
   }
 
   const imageResponse = await fetch(artworkUrl, {
-    next: {
-      revalidate: 86400,
-    },
+    cache: "no-store",
   });
 
   if (!imageResponse.ok) {

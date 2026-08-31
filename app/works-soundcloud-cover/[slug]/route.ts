@@ -11,6 +11,10 @@ type SoundCloudOEmbedResponse = {
   thumbnail_url?: string;
 };
 
+function getOriginalArtworkUrl(thumbnailUrl: string) {
+  return thumbnailUrl.replace(/-t\d+x\d+(?=\.[a-z]+$)/i, "-original");
+}
+
 async function getSoundCloudArtworkUrl(soundCloudUrl: string) {
   const oEmbedUrl = new URL("https://soundcloud.com/oembed");
   oEmbedUrl.searchParams.set("format", "json");
@@ -27,7 +31,9 @@ async function getSoundCloudArtworkUrl(soundCloudUrl: string) {
   }
 
   const data = (await response.json()) as SoundCloudOEmbedResponse;
-  return data.thumbnail_url ?? null;
+  return data.thumbnail_url
+    ? getOriginalArtworkUrl(data.thumbnail_url)
+    : null;
 }
 
 export async function GET(_request: Request, { params }: RouteProps) {
@@ -46,9 +52,7 @@ export async function GET(_request: Request, { params }: RouteProps) {
   }
 
   const imageResponse = await fetch(artworkUrl, {
-    next: {
-      revalidate: 86400,
-    },
+    cache: "no-store",
   });
 
   if (!imageResponse.ok) {

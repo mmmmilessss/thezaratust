@@ -34,7 +34,7 @@ export default function MusicArtworkLaunch({
       <button
         type="button"
         onClick={() => setIsOpen((current) => !current)}
-        className="group relative block text-left"
+        className="group relative block w-full max-w-[80vh] text-left"
         aria-expanded={isOpen}
         aria-label={`Open listening platforms for ${title}`}
       >
@@ -44,7 +44,8 @@ export default function MusicArtworkLaunch({
           width={imageWidth}
           height={imageHeight}
           sizes="(max-width: 767px) 100vw, 50vw"
-          className="block h-auto max-h-[80vh] w-auto max-w-full"
+          loading="eager"
+          className="block h-auto w-full"
         />
         <span className="absolute inset-0 flex items-center justify-center bg-black/0 text-sm font-gotham-bold opacity-0 transition group-hover:bg-black/35 group-hover:opacity-100">
           GO LISTEN
