@@ -48,8 +48,8 @@ export default function AboutPage() {
         <div className="mb-14 max-w-2xl space-y-8 text-[calc(0.65rem+1px)] leading-5 font-gotham-medium sm:text-[13px] sm:leading-6">
           <div className="space-y-4 normal-case tracking-[0.02em]">
             <p>
-              ZARATUST is the multidisciplinary creative practice of Park Geon
-              Woo, spanning sound, moving image, photography, and related forms.
+              ZARATUST is the multidisciplinary creative practice of PARK GEON
+              WOO, spanning sound, moving image, photography, and related forms.
             </p>
             <p>Music is released under the name CRYSTYN.</p>
             <p>Based in Seoul, South Korea.</p>
