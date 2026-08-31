@@ -57,7 +57,12 @@ export default function ArchiveClient({ works }: ArchiveClientProps) {
         <div className="space-y-14">
           {yearEntries.map(([year, groupedWorks]) => (
             <section key={year}>
-              <h2 className="mb-6 text-base sm:text-lg">{year}</h2>
+              <h2 className="mb-6 flex items-baseline gap-2 text-base sm:text-lg">
+                <span>{year}</span>
+                <span className="text-[0.55rem] font-gotham-medium opacity-40 sm:text-[0.65rem]">
+                  {String(groupedWorks.length).padStart(2, "0")}
+                </span>
+              </h2>
               <WorkGrid works={groupedWorks} layout="grid" mode="static" dimOnHover />
             </section>
           ))}
