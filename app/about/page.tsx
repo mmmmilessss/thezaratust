@@ -14,7 +14,7 @@ const socialLinks = [
   },
   {
     label: "SoundCloud",
-    href: "https://soundcloud.com/milessszaratust",
+    href: "https://soundcloud.com/crystalcrystyn",
     iconSrc: "/icons/soundcloud.svg",
   },
   {
