@@ -27,8 +27,9 @@ function getMusicMetaLabel(format: string | undefined, displayDate: string) {
   return format ? `${format.toUpperCase()} · ${displayDate}` : displayDate;
 }
 
-function getArtworkMetaLabel(displayDate: string) {
-  return displayDate;
+function getArtworkMetaLabel(work: { displayDate: string; displayType?: string; year: number; duration?: string }) {
+  if (!work.displayType) return work.displayDate;
+  return [work.displayType, String(work.year), work.duration].filter(Boolean).join(" · ");
 }
 
 function getSpotifyEmbedUrl(spotifyUrl?: string) {
@@ -165,6 +166,12 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
   const spotifyEmbedUrl = getSpotifyEmbedUrl(work.links?.spotify);
   const soundCloudEmbedUrl = spotifyEmbedUrl ? null : getSoundCloudEmbedUrl(work.links?.soundcloud);
   const youTubeEmbedUrl = getYouTubeEmbedUrl(work.links?.youtube);
+  const creditRows = work.credits
+    ? work.credits.split("\n").filter(Boolean).map((credit) => {
+        const [role, ...valueParts] = credit.split("|");
+        return { role: role.trim(), value: valueParts.join("|").trim() };
+      })
+    : [];
   const projectName = isAssignedProject(work.project) ? work.project : null;
   const projectHref = projectName ? `/projects/${slugifyProjectName(projectName)}` : null;
   const categoryWorks = getWorksByCategory(work.type);
@@ -191,7 +198,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
   const baseMetaLabel =
     work.type === "music"
       ? getMusicMetaLabel(work.format, work.displayDate)
-      : getArtworkMetaLabel(work.displayDate);
+      : getArtworkMetaLabel(work);
   const metadataLine = (
     <>
       <span>{baseMetaLabel}</span>
@@ -243,6 +250,22 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
                 className="block aspect-video w-full border-0"
               />
             </div>
+          ) : null}
+
+          {creditRows.length ? (
+            <section className="max-w-3xl" aria-labelledby="credits-heading">
+              <h2 id="credits-heading" className="mb-6 text-xs tracking-[0.2em] font-gotham-bold sm:text-sm">
+                CREDITS
+              </h2>
+              <dl className="grid grid-cols-[6.5rem_1fr] gap-x-6 gap-y-3 text-xs leading-5 font-gotham-medium sm:grid-cols-[8rem_1fr] sm:text-sm sm:leading-6">
+                {creditRows.map((credit, index) => (
+                  <div key={`${credit.role}-${credit.value}-${index}`} className="contents">
+                    <dt className="opacity-50">{credit.role}</dt>
+                    <dd>{credit.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
           ) : null}
 
           {work.description ? (

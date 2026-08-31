@@ -36,6 +36,9 @@ export type Work = {
   thumbnailWidth: number;
   thumbnailHeight: number;
   description?: string;
+  displayType?: string;
+  duration?: string;
+  credits?: string;
   images?: WorkImage[];
   links?: WorkLinks;
   sortDateValue: number;

@@ -174,30 +174,36 @@ function parseYamlFile(filePath: string) {
     date?: string;
     project?: string;
     description?: string;
+    displayType?: string;
+    duration?: string;
+    credits?: string;
     links?: WorkLinks;
   } = {};
-  let currentSection: "links" | "description" | null = null;
+  let currentSection: "links" | "description" | "credits" | null = null;
   let descriptionIndent: number | null = null;
   const descriptionLines: string[] = [];
+  const creditsLines: string[] = [];
 
   for (const rawLine of lines) {
     const indent = rawLine.match(/^\s*/)?.[0].length ?? 0;
     const trimmed = rawLine.trim();
 
-    if (currentSection === "description") {
+    if (currentSection === "description" || currentSection === "credits") {
+      const section = currentSection;
+      const sectionLines = section === "description" ? descriptionLines : creditsLines;
       if (!trimmed) {
-        descriptionLines.push("");
+        sectionLines.push("");
         continue;
       }
 
       if (indent > 0) {
         const nextIndent: number = descriptionIndent ?? indent;
         descriptionIndent = nextIndent;
-        descriptionLines.push(rawLine.slice(nextIndent));
+        sectionLines.push(rawLine.slice(nextIndent));
         continue;
       }
 
-      result.description = descriptionLines.join("\n");
+      result[section] = sectionLines.join("\n");
       currentSection = null;
       descriptionIndent = null;
     }
@@ -242,15 +248,21 @@ function parseYamlFile(filePath: string) {
         continue;
       }
 
-      if (key === "description" && value === "|") {
-        currentSection = "description";
-        descriptionLines.length = 0;
+      if ((key === "description" || key === "credits") && value === "|") {
+        currentSection = key;
+        (key === "description" ? descriptionLines : creditsLines).length = 0;
         descriptionIndent = null;
-        result.description = "";
+        result[key] = "";
         continue;
       }
 
-      if (key === "type" || key === "title" || key === "date" || key === "description") {
+      if (key === "displayType" || key === "duration") {
+        result[key] = value;
+        currentSection = null;
+        continue;
+      }
+
+      if (key === "type" || key === "title" || key === "date" || key === "description" || key === "credits") {
         result[key] = value;
         currentSection = null;
       }
@@ -276,8 +288,8 @@ function parseYamlFile(filePath: string) {
     }
   }
 
-  if (currentSection === "description") {
-    result.description = descriptionLines.join("\n");
+  if (currentSection === "description" || currentSection === "credits") {
+    result[currentSection] = (currentSection === "description" ? descriptionLines : creditsLines).join("\n");
   }
 
   return result;
@@ -408,6 +420,9 @@ function parseWorkFolder(folderName: string, sortOrder: number) {
     year: parsedDate.year,
     project: parsed.project,
     description: parsed.description,
+    displayType: parsed.displayType,
+    duration: parsed.duration,
+    credits: parsed.credits,
     thumbnail: thumbnail ?? "",
     thumbnailWidth: thumbnailDimensions.width,
     thumbnailHeight: thumbnailDimensions.height,
