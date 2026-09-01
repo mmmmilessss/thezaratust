@@ -20,6 +20,10 @@ body {
   letter-spacing: 0.06em;
 }
 
+a, button, [role="button"], summary, label[for], select {
+  cursor: pointer;
+}
+
 :lang(ko) {
   font-family: var(--font-apple-sd-gothic-neo-bold), sans-serif;
   font-size: 1.1em;

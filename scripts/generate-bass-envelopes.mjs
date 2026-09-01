@@ -1,23 +1,10 @@
-import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from "node:fs";
-import { basename, extname, join } from "node:path";
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
-const roots = ["content/works", "public/audio", "public/media"].map((value) => join(process.cwd(), value)).filter(existsSync);
-const extensions = new Set([".mp3", ".wav", ".m4a", ".aac", ".flac", ".ogg"]);
-const files = [];
-function walk(directory) { for (const entry of readdirSync(directory, { withFileTypes: true })) { const path = join(directory, entry.name); if (entry.isDirectory()) walk(path); else if (extensions.has(extname(entry.name).toLowerCase())) files.push(path); } }
-roots.forEach(walk);
-if (!files.length) { console.log("No local audio sources; bass envelopes unchanged."); process.exit(0); }
-const outDir = join(process.cwd(), "public/bass-envelopes"); mkdirSync(outDir, { recursive: true });
-for (const file of files) {
-  const output = join(outDir, `${basename(file, extname(file)).toLowerCase().replace(/[^a-z0-9]+/g, "-")}.json`);
-  if (existsSync(output) && statSync(output).mtimeMs >= statSync(file).mtimeMs) continue;
-  const decoded = spawnSync("ffmpeg", ["-v", "error", "-i", file, "-af", "highpass=f=40,lowpass=f=120", "-ac", "1", "-ar", "2000", "-f", "f32le", "pipe:1"], { maxBuffer: 1024 * 1024 * 256 });
-  if (decoded.status !== 0) { console.warn(`Skipped ${file}: ffmpeg unavailable or decode failed.`); continue; }
-  const samples = new Float32Array(decoded.stdout.buffer, decoded.stdout.byteOffset, Math.floor(decoded.stdout.byteLength / 4));
-  const windowSize = 50; const rms = [];
-  for (let i = 0; i < samples.length; i += windowSize) { let sum = 0; const end = Math.min(samples.length, i + windowSize); for (let j = i; j < end; j++) sum += samples[j] ** 2; rms.push(Math.sqrt(sum / (end - i))); }
-  const sorted = [...rms].sort((a, b) => a - b); const ceiling = sorted[Math.floor(sorted.length * .98)] || 1;
-  const values = rms.map((value) => Math.round(Math.min(1, value / ceiling) ** .7 * 255) / 255);
-  writeFileSync(output, JSON.stringify({ intervalMs: 25, source: basename(file), values }));
-}
+const root=process.cwd(), sourceRoot=join(root,"public/generated/audio-analysis"), outDir=join(root,"public/bass-envelopes");
+if(!existsSync(sourceRoot)){console.log("No cached analysis audio.");process.exit(0);} mkdirSync(outDir,{recursive:true});
+const audio=readdirSync(sourceRoot).filter((name)=>/\.analysis\.(mp3|m4a|wav|aac|flac|ogg)$/i.test(name));
+function wavSamples(buffer){const index=buffer.indexOf(Buffer.from("data"));if(index<0)throw new Error("Invalid WAV");const start=index+8;return new Int16Array(buffer.buffer,buffer.byteOffset+start,Math.floor((buffer.length-start)/2));}
+function biquad(samples,rate,kind,frequency){const q=Math.SQRT1_2,w=2*Math.PI*frequency/rate,c=Math.cos(w),s=Math.sin(w),alpha=s/(2*q);let b0=kind==="low"?(1-c)/2:(1+c)/2,b1=kind==="low"?1-c:-(1+c),b2=b0,a0=1+alpha,a1=-2*c,a2=1-alpha;b0/=a0;b1/=a0;b2/=a0;a1/=a0;a2/=a0;const out=new Float32Array(samples.length);let x1=0,x2=0,y1=0,y2=0;for(let i=0;i<samples.length;i++){const x=samples[i]/32768,y=b0*x+b1*x1+b2*x2-a1*y1-a2*y2;out[i]=y;x2=x1;x1=x;y2=y1;y1=y;}return out;}
+for(const name of audio){const source=join(sourceRoot,name),slug=name.replace(/\.analysis\.[^.]+$/i,""),output=join(outDir,`${slug}.json`);if(existsSync(output)&&statSync(output).mtimeMs>=statSync(source).mtimeMs){console.log(`CACHED ${slug}`);continue;}const temporary=join("/tmp",`zaratust-${slug}-${process.pid}.wav`);const converted=spawnSync("afconvert",["-f","WAVE","-d","LEI16@8000","-c","1",source,temporary],{encoding:"utf8"});if(converted.status!==0){console.warn(`Skipped ${slug}: ${converted.stderr}`);continue;}const pcm=wavSamples(readFileSync(temporary));unlinkSync(temporary);const band=biquad(biquad(pcm,8000,"high",40),8000,"low",120),windowSize=200,rms=[];for(let i=0;i<band.length;i+=windowSize){let sum=0,end=Math.min(band.length,i+windowSize);for(let j=i;j<end;j++)sum+=band[j]**2;rms.push(Math.sqrt(sum/(end-i)));}const sorted=[...rms].sort((a,b)=>a-b),ceiling=sorted[Math.floor(sorted.length*.98)]||1,values=rms.map((value)=>Math.round(Math.min(1,value/ceiling)**.7*255)/255);writeFileSync(output,JSON.stringify({intervalMs:25,source:name,values}));console.log(`GENERATED ${slug}: ${values.length} samples`);}

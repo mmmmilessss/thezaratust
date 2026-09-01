@@ -20,7 +20,7 @@ export default function WorkCard({
   showCategory = true,
 }: WorkCardProps) {
   const isHoverMode = mode === "hover";
-  const cursorLabel = work.type === "music" ? "LISTEN ↗" : work.type === "film" || work.type === "video" ? "WATCH ↗" : "VIEW ↗";
+  const cursorLabel = work.type === "music" ? "LISTEN" : work.type === "film" || work.type === "video" ? "WATCH" : "VIEW";
 
   return (
     <Link href={`/artwork/${work.slug}`} className="block" data-cursor-label={cursorLabel}>

@@ -331,12 +331,17 @@ function getYouTubeVideoId(youtubeUrl?: string) {
   return null;
 }
 
-function getPreviewImages(type: WorkCategory, images: WorkImage[], youtubeUrl?: string) {
+function getPreviewImages(type: WorkCategory, slug: string, images: WorkImage[], youtubeUrl?: string) {
   if (type === "photography") {
-    return images.slice(0, 6).map((image) => image.src);
+    const count = Math.min(20, images.length);
+    const generated = Array.from({ length: count }, (_, index) => `/generated/hover-previews/${slug}/photo-${String(index).padStart(2, "0")}.jpg`);
+    if (generated.every((source) => existsSync(path.join(process.cwd(), "public", source)))) return generated;
+    return Array.from({ length: count }, (_, index) => images[Math.round(index * (images.length - 1) / Math.max(1, count - 1))].src);
   }
 
   if (type === "video" || type === "film") {
+    const generated = Array.from({ length: 20 }, (_, index) => `/generated/hover-previews/${slug}/frame-${String(index).padStart(2, "0")}.jpg`);
+    if (generated.every((source) => existsSync(path.join(process.cwd(), "public", source)))) return generated;
     const videoId = getYouTubeVideoId(youtubeUrl);
     return videoId
       ? [0, 1, 2, 3].map((frame) => `/works-youtube-thumbnail/${videoId}?frame=${frame}`)
@@ -443,7 +448,7 @@ function parseWorkFolder(folderName: string, sortOrder: number) {
     thumbnailWidth: thumbnailDimensions.width,
     thumbnailHeight: thumbnailDimensions.height,
     images,
-    previewImages: getPreviewImages(parsed.type, images, parsed.links?.youtube),
+    previewImages: getPreviewImages(parsed.type, slug, images, parsed.links?.youtube),
     audioEnvelope: existsSync(audioEnvelopePath) ? `/bass-envelopes/${slug}.json` : undefined,
     links: parsed.links,
     sortDateValue: parsedDate.sortDateValue,
