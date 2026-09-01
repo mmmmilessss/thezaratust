@@ -62,10 +62,10 @@ export default function MusicReactive({ envelope, colorSource, children, classNa
       const position = state.positionMs + (state.isPlaying ? performance.now() - state.updatedAt : 0);
       const target = state.isPlaying && !state.isBuffering ? values[Math.min(values.length - 1, Math.floor(position / 25))] ?? 0 : 0;
       level += (target - level) * (target > level ? 0.14 : 0.055);
-      const alpha = level * 0.16;
-      const blur = 10 + level * 18;
+      const alpha = level * 0.3;
+      const blur = 18 + level * 28;
       element.style.filter = level > 0.002
-        ? `drop-shadow(0 0 ${blur.toFixed(1)}px rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${alpha.toFixed(3)})) drop-shadow(0 0 ${(blur * 1.8).toFixed(1)}px rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${(alpha * 0.45).toFixed(3)}))`
+        ? `drop-shadow(0 0 ${blur.toFixed(1)}px rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${alpha.toFixed(3)})) drop-shadow(0 0 ${(blur * 2.15).toFixed(1)}px rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${(alpha * 0.42).toFixed(3)}))`
         : "none";
       if (state.isPlaying || level > .002) raf = requestAnimationFrame(tick);
     };
