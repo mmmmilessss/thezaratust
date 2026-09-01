@@ -57,7 +57,7 @@ export default function AboutPage() {
             <p>Based in Seoul, South Korea.</p>
           </div>
 
-          <div lang="ko" className="space-y-4 [&_p]:!text-[13px] [&_p]:leading-5">
+          <div lang="ko" className="space-y-4 [&_p]:!text-[12px] [&_p]:leading-5 sm:[&_p]:!text-[13px]">
             <p>
               ZARATUST는 박건우의 여러 매체를 넘나드는 창작 활동으로,
               <br />

@@ -40,11 +40,11 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             {details ? (
               <div className="mt-4 space-y-3 font-gotham-medium">
                 <p className="text-xs tracking-[0.12em] opacity-60 sm:text-sm">{details.meta}</p>
-                <p className="max-w-2xl text-xs leading-6 tracking-[0.06em] opacity-80 sm:text-sm">{details.premise}</p>
+                <p className="max-w-2xl text-[11px] leading-5 tracking-[0.06em] opacity-80 sm:text-sm sm:leading-6">{details.premise}</p>
               </div>
             ) : null}
           </div>
-          <Link href="/projects" className="text-xs font-gotham-medium opacity-70 transition-opacity hover:opacity-40 sm:text-sm">
+          <Link href="/projects" className="ml-auto shrink-0 text-right text-[9px] font-gotham-medium opacity-70 transition-opacity hover:opacity-40 sm:text-sm">
             ALL PROJECTS
           </Link>
         </div>

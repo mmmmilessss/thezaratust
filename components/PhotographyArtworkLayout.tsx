@@ -65,8 +65,8 @@ export default function PhotographyArtworkLayout({ category, title, metadata, de
           <img src={activeImage.src} alt={`${title} image ${activeIndex + 1} original`} className="max-h-full max-w-full object-contain" onClick={(event) => event.stopPropagation()} />
           <button type="button" onClick={() => setActiveIndex(null)} className="absolute right-4 top-4 rounded-full bg-black/50 p-2 text-white hover:bg-black/80" aria-label="원본 닫기"><X size={24} /></button>
           {images.length > 1 ? <>
-            <button type="button" onClick={(event) => { event.stopPropagation(); setActiveIndex((activeIndex - 1 + images.length) % images.length); }} className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/80 sm:left-6" aria-label="이전 이미지"><ChevronLeft size={28} /></button>
-            <button type="button" onClick={(event) => { event.stopPropagation(); setActiveIndex((activeIndex + 1) % images.length); }} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/80 sm:right-6" aria-label="다음 이미지"><ChevronRight size={28} /></button>
+            <button type="button" onClick={(event) => { event.stopPropagation(); setActiveIndex((activeIndex - 1 + images.length) % images.length); }} className="absolute left-3 top-1/2 -translate-y-1/2 text-white [filter:drop-shadow(0_2px_5px_rgba(0,0,0,0.95))] transition-opacity hover:opacity-60 sm:left-6 sm:rounded-full sm:bg-black/50 sm:p-2 sm:hover:bg-black/80" aria-label="이전 이미지"><ChevronLeft size={30} /></button>
+            <button type="button" onClick={(event) => { event.stopPropagation(); setActiveIndex((activeIndex + 1) % images.length); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-white [filter:drop-shadow(0_2px_5px_rgba(0,0,0,0.95))] transition-opacity hover:opacity-60 sm:right-6 sm:rounded-full sm:bg-black/50 sm:p-2 sm:hover:bg-black/80" aria-label="다음 이미지"><ChevronRight size={30} /></button>
             <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-white/70">{activeIndex + 1} / {images.length}</p>
           </> : null}
         </div>

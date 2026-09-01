@@ -60,7 +60,7 @@ export default function HomePage() {
       <div className="px-6 py-16 sm:px-10 sm:py-20 lg:px-12 lg:py-24">
         <section id="home-navigation" className="mb-24 lg:mb-32">
           <NavigationLinks
-            className="flex flex-wrap justify-center gap-6 text-sm tracking-wide sm:gap-12 sm:text-base"
+            className="grid grid-cols-6 items-center gap-x-4 gap-y-6 text-center text-sm tracking-wide [&_a:nth-child(-n+3)]:col-span-2 [&_a:nth-child(n+4)]:col-span-3 sm:flex sm:flex-wrap sm:justify-center sm:gap-12 sm:text-base"
             linkClassName="hover:opacity-60 transition"
           />
         </section>
