@@ -97,7 +97,7 @@ export default function Header() {
               : "justify-center"
           }`}
         >
-          <Link href="/" className="transition-opacity hover:opacity-60">
+          <Link href="/" className={isHomePage ? undefined : "transition-opacity hover:opacity-60"}>
             <Image
               src="/logo.png"
               alt="thezaratust"
