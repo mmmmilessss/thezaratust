@@ -25,20 +25,6 @@ export default function InteractiveWorkMedia({ src, alt, width, height, sizes, e
     const timer = setTimeout(update, 0);
     return () => { clearTimeout(timer); media.removeEventListener("change", update); reduced.removeEventListener("change", update); };
   }, [previews.length]);
-  useEffect(() => {
-    if (!enabled || !container.current) return;
-    const observer = new IntersectionObserver((entries) => {
-      if (!entries[0]?.isIntersecting) return;
-      for (const source of previews) {
-        const image = new window.Image();
-        image.src = source;
-        void image.decode().catch(() => undefined);
-      }
-      observer.disconnect();
-    }, { rootMargin: "500px" });
-    observer.observe(container.current);
-    return () => observer.disconnect();
-  }, [enabled, previews]);
   const tick = (time: number) => {
     const delta = lastTime.current ? Math.min(50, time - lastTime.current) : 16.67;
     lastTime.current = time;
@@ -61,10 +47,11 @@ export default function InteractiveWorkMedia({ src, alt, width, height, sizes, e
     <div ref={container} className="relative bg-black" style={{ aspectRatio: `${width}/${height}` }} onPointerEnter={enter} onPointerMove={move} onPointerLeave={leave}>
       <Image src={src} alt="" fill sizes="24px" aria-hidden className={`object-cover [image-rendering:pixelated] transition-opacity duration-200 ${loaded ? "opacity-0" : "opacity-70"}`} />
       <Image src={src} alt={alt} fill sizes={sizes} loading={eager ? "eager" : "lazy"} onLoad={() => setTimeout(() => setLoaded(true), 180)} className={`object-cover transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"}`} />
-      {enabled && active >= 0 ? previews.map((preview, index) => (
-        // Generated previews are already 1200px / JPEG 86; using their exact URL also makes the near-viewport decode cache effective.
+      {enabled && active >= 0 ? [active - 1, active, active + 1]
+        .filter((index) => index >= 0 && index < previews.length)
+        .map((index) => (
         // eslint-disable-next-line @next/next/no-img-element
-        <img key={preview} src={preview} alt="" aria-hidden loading="eager" className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-100 ${index === active ? "opacity-100" : "opacity-0"}`} />
+        <img key={previews[index]} src={previews[index]} alt="" aria-hidden loading="eager" className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-100 ${index === active ? "opacity-100" : "opacity-0"}`} />
       )) : null}
     </div>
   );

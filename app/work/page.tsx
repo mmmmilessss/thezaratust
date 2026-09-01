@@ -4,7 +4,7 @@ import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata = createPageMetadata({
   title: "Work",
-  description: "Explore music, film, photography, and video works by ZARATUST.",
+  description: "Explore music, photography, and video works by CRYSTYN, with film by PARK GEON WOO.",
   path: "/work",
 });
 

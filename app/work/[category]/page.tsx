@@ -13,10 +13,10 @@ function isWorkCategory(value: string): value is WorkCategory {
 }
 
 const categoryDescriptions: Record<WorkCategory, string> = {
-  music: "Music released by CRYSTYN and presented by ZARATUST.",
-  film: "Short films and moving-image works by ZARATUST.",
-  photography: "Photography works and ongoing visual studies by ZARATUST.",
-  video: "Video works, listening experiences, and moving-image projects by ZARATUST.",
+  music: "Music released by CRYSTYN.",
+  film: "Short films and moving-image works by PARK GEON WOO.",
+  photography: "Photography works and ongoing visual studies by CRYSTYN.",
+  video: "Video works, listening experiences, and moving-image projects by CRYSTYN.",
 };
 
 export async function generateMetadata({ params }: WorkCategoryPageProps) {

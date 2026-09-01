@@ -12,6 +12,12 @@ type PageMetadataOptions = {
   description: string;
   path: string;
   absoluteTitle?: boolean;
+  image?: {
+    url: string;
+    width: number;
+    height: number;
+    alt: string;
+  };
 };
 
 export function createPageMetadata({
@@ -19,8 +25,10 @@ export function createPageMetadata({
   description,
   path,
   absoluteTitle = false,
+  image,
 }: PageMetadataOptions): Metadata {
   const socialTitle = absoluteTitle ? title : `${title} | ZARATUST`;
+  const socialImage = image ?? DEFAULT_SHARE_IMAGE;
 
   return {
     title: absoluteTitle ? { absolute: title } : title,
@@ -34,13 +42,13 @@ export function createPageMetadata({
       url: path,
       siteName: "ZARATUST",
       type: "website",
-      images: [DEFAULT_SHARE_IMAGE],
+      images: [socialImage],
     },
     twitter: {
       card: "summary_large_image",
       title: socialTitle,
       description,
-      images: [DEFAULT_SHARE_IMAGE.url],
+      images: [socialImage.url],
     },
   };
 }

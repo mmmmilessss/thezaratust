@@ -122,8 +122,9 @@ export async function generateMetadata({
   }
 
   const title = `${work.title} — ZARATUST`;
+  const creator = work.type === "film" ? "PARK GEON WOO" : "CRYSTYN";
   const description =
-    work.description || `${work.type.toUpperCase()} by ZARATUST.`;
+    work.description || `${work.type.toUpperCase()} by ${creator}.`;
 
   return {
     title: work.title,

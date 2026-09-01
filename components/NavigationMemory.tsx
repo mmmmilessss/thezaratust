@@ -12,15 +12,18 @@ export default function NavigationMemory() {
     const key = `zaratust:scroll:${pathname}?${search}`;
     history.scrollRestoration = "manual";
     const saved = Number(sessionStorage.getItem(key) ?? 0);
+    let lastPosition = saved;
     requestAnimationFrame(() => requestAnimationFrame(() => scrollTo({ top: saved, behavior: "instant" })));
     let ticking = false;
-    const save = () => {
-      if (!ticking) requestAnimationFrame(() => { sessionStorage.setItem(key, String(scrollY)); ticking = false; });
+    const track = () => {
+      lastPosition = scrollY;
+      if (!ticking) requestAnimationFrame(() => { sessionStorage.setItem(key, String(lastPosition)); ticking = false; });
       ticking = true;
     };
-    addEventListener("scroll", save, { passive: true });
+    const save = () => sessionStorage.setItem(key, String(lastPosition));
+    addEventListener("scroll", track, { passive: true });
     addEventListener("pagehide", save);
-    return () => { save(); removeEventListener("scroll", save); removeEventListener("pagehide", save); };
+    return () => { save(); removeEventListener("scroll", track); removeEventListener("pagehide", save); };
   }, [pathname, search]);
   return null;
 }

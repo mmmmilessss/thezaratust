@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { publishPlayback } from "@/lib/playback";
 
 type SoundCloudWidget = { bind: (event: string, callback: (data?: { currentPosition?: number; relativePosition?: number }) => void) => void; getDuration: (callback: (duration: number) => void) => void };
@@ -38,6 +38,8 @@ function getSpotifyApi() {
 export default function AudioEmbed({ platform, src, title, uri }: { platform: "spotify" | "soundcloud"; src: string; title: string; uri?: string }) {
   const iframe = useRef<HTMLIFrameElement>(null);
   const spotify = useRef<HTMLDivElement>(null);
+  const [spotifyReady, setSpotifyReady] = useState(false);
+  const [spotifyFallback, setSpotifyFallback] = useState(false);
   useEffect(() => {
     if (platform === "soundcloud") {
       loadScript("https://w.soundcloud.com/player/api.js");
@@ -53,9 +55,38 @@ export default function AudioEmbed({ platform, src, title, uri }: { platform: "s
     }
     if (!uri || !spotify.current) return;
     let cancelled = false;
-    void getSpotifyApi().then((api) => { if (!cancelled && spotify.current) api.createController(spotify.current, { uri }, (controller) => controller.addListener("playback_update", ({ data = {} }) => publishPlayback({ platform, trackId: uri, isPlaying: !data.isPaused, isBuffering: !!data.isBuffering, positionMs: data.position ?? 0, durationMs: data.duration ?? 0, playbackRate: 1 }))); });
-    return () => { cancelled = true; };
+    const fallbackTimer = window.setTimeout(() => {
+      if (!cancelled) setSpotifyFallback(true);
+    }, 6000);
+    void getSpotifyApi().then((api) => {
+      if (cancelled || !spotify.current) return;
+      api.createController(spotify.current, { uri }, (controller) => {
+        if (cancelled) return;
+        setSpotifyReady(true);
+        window.clearTimeout(fallbackTimer);
+        controller.addListener("playback_update", ({ data = {} }) => publishPlayback({ platform, trackId: uri, isPlaying: !data.isPaused, isBuffering: !!data.isBuffering, positionMs: data.position ?? 0, durationMs: data.duration ?? 0, playbackRate: 1 }));
+      });
+    });
+    return () => { cancelled = true; window.clearTimeout(fallbackTimer); };
   }, [platform, src, uri]);
-  if (platform === "spotify") return <div ref={spotify} className="min-h-[352px] w-full" aria-label={`${title} Spotify player`} />;
+  if (platform === "spotify") {
+    return (
+      <div className="min-h-[352px] w-full" aria-label={`${title} Spotify player`}>
+        {spotifyFallback && !spotifyReady ? (
+          <iframe
+            src={src}
+            title={`${title} Spotify player`}
+            width="100%"
+            height="352"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            className="w-full border-0"
+          />
+        ) : (
+          <div ref={spotify} className="min-h-[352px] w-full" />
+        )}
+      </div>
+    );
+  }
   return <iframe ref={iframe} src={src} title={`${title} SoundCloud player`} width="100%" height="166" allow="autoplay" loading="lazy" className="w-full border-0" />;
 }

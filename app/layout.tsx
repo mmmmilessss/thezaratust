@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     default: "ZARATUST",
     template: "%s | ZARATUST",
   },
-  description: "Music, film, photography, and visual work by ZARATUST.",
+  description: "Music, photography, video, and visual work by CRYSTYN, with film by PARK GEON WOO.",
   icons: {
     icon: "/favicon.ico",
   },

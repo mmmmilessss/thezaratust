@@ -28,10 +28,17 @@ export async function generateMetadata({ params }: ProjectDetailPageProps) {
 
   const projectName = selectedProjectGroup[0];
   const details = getProjectDetails(projectName);
+  const representativeWork = sortWorks(selectedProjectGroup[1], "newest")[0];
   return createPageMetadata({
     title: projectName,
-    description: details?.premise ?? `A multidisciplinary project by ZARATUST: ${projectName}.`,
+    description: details?.premise ?? `A multidisciplinary project by CRYSTYN: ${projectName}.`,
     path: `/projects/${project}`,
+    image: representativeWork ? {
+      url: `/artwork-og/${representativeWork.slug}`,
+      width: 1200,
+      height: 630,
+      alt: projectName,
+    } : undefined,
   });
 }
 
