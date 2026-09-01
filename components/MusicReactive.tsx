@@ -16,6 +16,16 @@ function enhanceExtractedColor({ red, green, blue }: GlowColor): GlowColor {
   return { red: Math.min(210, red * 1.08), green: green * 0.72, blue: blue * 0.58 };
 }
 
+function brightenGlowColor(color: GlowColor): GlowColor {
+  const maximum = Math.max(color.red, color.green, color.blue);
+  const scale = maximum > 0 && maximum < 180 ? 180 / maximum : 1;
+  return {
+    red: Math.min(225, color.red * scale),
+    green: Math.min(225, color.green * scale),
+    blue: Math.min(225, color.blue * scale),
+  };
+}
+
 async function extractGlowColor(source: string): Promise<GlowColor> {
   const image = new Image();
   image.decoding = "async";
@@ -45,8 +55,8 @@ async function extractGlowColor(source: string): Promise<GlowColor> {
     totalWeight += weight;
   }
 
-  if (!totalWeight) return { red: 82, green: 128, blue: 148 };
-  return enhanceExtractedColor({ red: red / totalWeight, green: green / totalWeight, blue: blue / totalWeight });
+  if (!totalWeight) return brightenGlowColor({ red: 82, green: 128, blue: 148 });
+  return brightenGlowColor(enhanceExtractedColor({ red: red / totalWeight, green: green / totalWeight, blue: blue / totalWeight }));
 }
 
 export default function MusicReactive({ envelope, colorSource, children, className = "" }: { envelope?: string; colorSource?: string; children: React.ReactNode; className?: string }) {
@@ -56,17 +66,19 @@ export default function MusicReactive({ envelope, colorSource, children, classNa
     if (!envelope || !element) return;
     let values: number[] = []; let state: PlaybackState | null = null; let raf = 0; let level = 0;
     let color: GlowColor = { red: 82, green: 128, blue: 148 };
-    if (colorSource) void extractGlowColor(colorSource).then((value) => { color = value; }).catch(() => undefined);
+    const renderGlow = (energy: number) => {
+      const alpha = 0.14 + energy * 0.36;
+      const blur = 18 + energy * 42;
+      element.style.filter = `drop-shadow(0 0 ${blur.toFixed(1)}px rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${alpha.toFixed(3)})) drop-shadow(0 0 ${(blur * 2.1).toFixed(1)}px rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${(0.065 + energy * 0.11).toFixed(3)}))`;
+    };
+    renderGlow(0);
+    if (colorSource) void extractGlowColor(colorSource).then((value) => { color = value; renderGlow(0); }).catch(() => undefined);
     const tick = () => {
       if (!state) return;
       const position = state.positionMs + (state.isPlaying ? performance.now() - state.updatedAt : 0);
       const target = state.isPlaying && !state.isBuffering ? values[Math.min(values.length - 1, Math.floor(position / 25))] ?? 0 : 0;
-      level += (target - level) * (target > level ? 0.14 : 0.055);
-      const alpha = level * 0.3;
-      const blur = 18 + level * 28;
-      element.style.filter = level > 0.002
-        ? `drop-shadow(0 0 ${blur.toFixed(1)}px rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${alpha.toFixed(3)})) drop-shadow(0 0 ${(blur * 2.15).toFixed(1)}px rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${(alpha * 0.42).toFixed(3)}))`
-        : "none";
+      level += (target - level) * (target > level ? 0.24 : 0.09);
+      renderGlow(Math.pow(Math.max(0, level), 0.65));
       if (state.isPlaying || level > .002) raf = requestAnimationFrame(tick);
     };
     const onPlayback = async (event: Event) => { state = (event as CustomEvent<PlaybackState>).detail; if (!values.length) values = (await fetch(envelope).then((r) => r.json())).values ?? []; cancelAnimationFrame(raf); raf = requestAnimationFrame(tick); };
