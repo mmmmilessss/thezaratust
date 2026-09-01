@@ -38,7 +38,7 @@ export default function WorkCard({
           />
 
           {isHoverMode ? (
-            <div className="absolute inset-0 flex flex-col justify-end bg-black/0 p-4 opacity-0 transition group-hover:bg-black/35 group-hover:opacity-100">
+            <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-black/0 p-4 opacity-0 transition group-hover:bg-black/35 group-hover:opacity-100">
               <p className="text-xs font-gotham-bold sm:text-sm">{work.title}</p>
               <p className="text-xs font-gotham-medium opacity-60 sm:text-sm">
                 {showCategory ? `${work.type.toUpperCase()} · ` : ""}{work.displayDate}

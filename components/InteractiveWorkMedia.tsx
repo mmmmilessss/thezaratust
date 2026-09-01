@@ -26,9 +26,9 @@ export default function InteractiveWorkMedia({ src, alt, width, height, sizes, e
   return (
     <div className="relative bg-black" style={{ aspectRatio: `${width}/${height}` }} onPointerEnter={() => enabled && setActive(0)} onPointerMove={move} onPointerLeave={() => setActive(-1)}>
       <Image src={src} alt="" fill sizes="24px" aria-hidden className={`object-cover [image-rendering:pixelated] transition-opacity duration-200 ${loaded ? "opacity-0" : "opacity-70"}`} />
-      <Image src={src} alt={alt} fill sizes={sizes} loading={eager ? "eager" : "lazy"} onLoad={() => setLoaded(true)} className={`object-cover transition-opacity duration-200 ${loaded ? "opacity-100" : "opacity-0"} ${dim ? "group-hover:opacity-60" : ""}`} />
+      <Image src={src} alt={alt} fill sizes={sizes} loading={eager ? "eager" : "lazy"} onLoad={() => setTimeout(() => setLoaded(true), 180)} className={`object-cover transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"} ${dim ? "group-hover:opacity-60" : ""}`} />
       {enabled && active >= 0 ? previews.map((preview, index) => (
-        <Image key={preview} src={preview} alt="" fill sizes={sizes} loading="lazy" className={`object-cover transition-opacity duration-100 ${index === active ? "opacity-100" : "opacity-0"} ${dim ? "group-hover:opacity-60" : ""}`} />
+        <Image key={preview} src={preview} alt="" fill sizes={sizes} loading="eager" className={`pointer-events-none object-cover transition-opacity duration-100 ${index === active ? "opacity-100" : "opacity-0"} ${dim ? "group-hover:opacity-60" : ""}`} />
       )) : null}
     </div>
   );

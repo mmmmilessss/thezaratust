@@ -207,7 +207,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
       {projectName && projectHref ? (
         <>
           <span> · </span>
-          <Link href={projectHref} className="hover:opacity-100">
+          <Link href={projectHref} className="transition-opacity hover:opacity-50">
             {projectName}
           </Link>
         </>

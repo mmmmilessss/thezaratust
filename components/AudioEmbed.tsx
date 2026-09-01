@@ -41,6 +41,6 @@ export default function AudioEmbed({ platform, src, title, uri }: { platform: "s
     window.onSpotifyIframeApiReady = (api) => api.createController(spotify.current!, { uri }, (controller) => controller.addListener("playback_update", ({ data = {} }) => publishPlayback({ platform, trackId: uri, isPlaying: !data.isPaused, isBuffering: !!data.isBuffering, positionMs: data.position ?? 0, durationMs: data.duration ?? 0, playbackRate: 1 })));
     loadScript("https://open.spotify.com/embed/iframe-api/v1");
   }, [platform, src, uri]);
-  if (platform === "spotify") return <div ref={spotify} className="min-h-[352px] w-full" aria-label={`${title} Spotify player`} />;
+  if (platform === "spotify") return <iframe src={src} title={`${title} Spotify player`} width="100%" height="380" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" className="w-full border-0" />;
   return <iframe ref={iframe} src={src} title={`${title} SoundCloud player`} width="100%" height="166" allow="autoplay" loading="lazy" className="w-full border-0" />;
 }
