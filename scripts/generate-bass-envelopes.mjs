@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, unlinkSync,
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
-const root=process.cwd(), sourceRoot=join(root,"public/generated/audio-analysis"), outDir=join(root,"public/bass-envelopes");
+const root=process.cwd(), sourceRoot=join(root,".cache/zaratust-audio"), outDir=join(root,"public/bass-envelopes");
 if(!existsSync(sourceRoot)){console.log("No cached analysis audio.");process.exit(0);} mkdirSync(outDir,{recursive:true});
 const audio=readdirSync(sourceRoot).filter((name)=>/\.analysis\.(mp3|m4a|wav|aac|flac|ogg)$/i.test(name));
 function wavSamples(buffer){const index=buffer.indexOf(Buffer.from("data"));if(index<0)throw new Error("Invalid WAV");const start=index+8;return new Int16Array(buffer.buffer,buffer.byteOffset+start,Math.floor((buffer.length-start)/2));}
