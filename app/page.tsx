@@ -4,6 +4,14 @@ import { getAllWorks } from "@/lib/works-content";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import { createPageMetadata } from "@/lib/metadata";
+
+export const metadata = createPageMetadata({
+  title: "ZARATUST — A Study of Aesthetics",
+  description: "ZARATUST is the multidisciplinary creative practice of PARK GEON WOO, spanning sound, moving image, photography, and related forms.",
+  path: "/",
+  absoluteTitle: true,
+});
 
 const SELECTED_WORK_SLUGS = [
   "tiny-thoughts-club",

@@ -1,4 +1,11 @@
 import Link from "next/link";
+import { createPageMetadata } from "@/lib/metadata";
+
+export const metadata = createPageMetadata({
+  title: "Contact",
+  description: "Contact ZARATUST, the Seoul-based multidisciplinary creative practice of PARK GEON WOO.",
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

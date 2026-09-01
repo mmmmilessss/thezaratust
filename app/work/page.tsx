@@ -1,5 +1,12 @@
 import Link from "next/link";
 import { WORK_CATEGORIES } from "@/types/work";
+import { createPageMetadata } from "@/lib/metadata";
+
+export const metadata = createPageMetadata({
+  title: "Work",
+  description: "Explore music, film, photography, and video works by ZARATUST.",
+  path: "/work",
+});
 
 export default function WorkPage() {
   return (

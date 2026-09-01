@@ -1,5 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import { createPageMetadata } from "@/lib/metadata";
+
+export const metadata = createPageMetadata({
+  title: "About",
+  description: "About ZARATUST, the Seoul-based multidisciplinary creative practice of PARK GEON WOO. Music is released as CRYSTYN.",
+  path: "/about",
+});
 
 const socialLinks = [
   {

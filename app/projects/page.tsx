@@ -2,6 +2,13 @@ import Link from "next/link";
 import { getAllWorks } from "@/lib/works-content";
 import { groupWorksByProject, slugifyProjectName } from "@/lib/works";
 import { getProjectDetails } from "@/lib/project-details";
+import { createPageMetadata } from "@/lib/metadata";
+
+export const metadata = createPageMetadata({
+  title: "Projects",
+  description: "Ongoing and completed multidisciplinary projects by ZARATUST.",
+  path: "/projects",
+});
 
 export default function ProjectsPage() {
   const projectGroups = Object.entries(groupWorksByProject(getAllWorks())).sort(

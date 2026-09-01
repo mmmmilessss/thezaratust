@@ -3,6 +3,7 @@ import WorkGrid from "@/components/WorkGrid";
 import { getAllWorks } from "@/lib/works-content";
 import { groupWorksByProject, slugifyProjectName, sortWorks } from "@/lib/works";
 import { getProjectDetails } from "@/lib/project-details";
+import { createPageMetadata } from "@/lib/metadata";
 import { notFound } from "next/navigation";
 
 type ProjectDetailPageProps = {
@@ -15,6 +16,23 @@ export function generateStaticParams() {
   return Object.keys(groupWorksByProject(getAllWorks())).map((projectName) => ({
     project: slugifyProjectName(projectName),
   }));
+}
+
+export async function generateMetadata({ params }: ProjectDetailPageProps) {
+  const { project } = await params;
+  const selectedProjectGroup = Object.entries(groupWorksByProject(getAllWorks())).find(
+    ([projectName]) => slugifyProjectName(projectName) === project,
+  );
+
+  if (!selectedProjectGroup) return {};
+
+  const projectName = selectedProjectGroup[0];
+  const details = getProjectDetails(projectName);
+  return createPageMetadata({
+    title: projectName,
+    description: details?.premise ?? `A multidisciplinary project by ZARATUST: ${projectName}.`,
+    path: `/projects/${project}`,
+  });
 }
 
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {

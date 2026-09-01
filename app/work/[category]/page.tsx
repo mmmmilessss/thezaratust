@@ -1,6 +1,7 @@
 import WorkGrid from "@/components/WorkGrid";
 import { getWorksByCategory } from "@/lib/works-content";
 import { WORK_CATEGORIES, type WorkCategory } from "@/types/work";
+import { createPageMetadata } from "@/lib/metadata";
 import { notFound } from "next/navigation";
 
 type WorkCategoryPageProps = {
@@ -9,6 +10,26 @@ type WorkCategoryPageProps = {
 
 function isWorkCategory(value: string): value is WorkCategory {
   return WORK_CATEGORIES.includes(value as WorkCategory);
+}
+
+const categoryDescriptions: Record<WorkCategory, string> = {
+  music: "Music released by CRYSTYN and presented by ZARATUST.",
+  film: "Short films and moving-image works by ZARATUST.",
+  photography: "Photography works and ongoing visual studies by ZARATUST.",
+  video: "Video works, listening experiences, and moving-image projects by ZARATUST.",
+};
+
+export async function generateMetadata({ params }: WorkCategoryPageProps) {
+  const { category } = await params;
+
+  if (!isWorkCategory(category)) return {};
+
+  const title = category.charAt(0).toUpperCase() + category.slice(1);
+  return createPageMetadata({
+    title,
+    description: categoryDescriptions[category],
+    path: `/work/${category}`,
+  });
 }
 
 export function generateStaticParams() {

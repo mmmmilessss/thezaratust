@@ -128,10 +128,14 @@ export async function generateMetadata({
   return {
     title: work.title,
     description,
+    alternates: {
+      canonical: `/artwork/${work.slug}`,
+    },
     openGraph: {
       title,
       description,
       type: "article",
+      url: `/artwork/${work.slug}`,
       images: [
         {
           url: `/artwork-og/${work.slug}`,
