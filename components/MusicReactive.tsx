@@ -67,9 +67,13 @@ export default function MusicReactive({ envelope, colorSource, children, classNa
     let values: number[] = []; let state: PlaybackState | null = null; let raf = 0; let level = 0;
     let color: GlowColor = { red: 82, green: 128, blue: 148 };
     const renderGlow = (energy: number) => {
-      const alpha = 0.14 + energy * 0.36;
-      const blur = 18 + energy * 42;
-      element.style.filter = `drop-shadow(0 0 ${blur.toFixed(1)}px rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${alpha.toFixed(3)})) drop-shadow(0 0 ${(blur * 2.1).toFixed(1)}px rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${(0.065 + energy * 0.11).toFixed(3)}))`;
+      if (energy < 0.004) {
+        element.style.filter = "none";
+        return;
+      }
+      const alpha = energy * 0.4;
+      const blur = 10 + energy * 20;
+      element.style.filter = `drop-shadow(0 0 ${blur.toFixed(1)}px rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${alpha.toFixed(3)})) drop-shadow(0 0 ${(blur * 1.55).toFixed(1)}px rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${(energy * 0.14).toFixed(3)}))`;
     };
     renderGlow(0);
     if (colorSource) void extractGlowColor(colorSource).then((value) => { color = value; renderGlow(0); }).catch(() => undefined);
@@ -77,7 +81,7 @@ export default function MusicReactive({ envelope, colorSource, children, classNa
       if (!state) return;
       const position = state.positionMs + (state.isPlaying ? performance.now() - state.updatedAt : 0);
       const target = state.isPlaying && !state.isBuffering ? values[Math.min(values.length - 1, Math.floor(position / 25))] ?? 0 : 0;
-      level += (target - level) * (target > level ? 0.24 : 0.09);
+      level += (target - level) * (target > level ? 0.26 : 0.15);
       renderGlow(Math.pow(Math.max(0, level), 0.65));
       if (state.isPlaying || level > .002) raf = requestAnimationFrame(tick);
     };
