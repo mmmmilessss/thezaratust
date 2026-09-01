@@ -7,7 +7,7 @@ type ArchiveSortControlsProps = {
   onChange: (sort: ArchiveSort) => void;
 };
 
-const sortOptions: ArchiveSort[] = ["random", "newest", "oldest"];
+const sortOptions: ArchiveSort[] = ["newest", "oldest", "random"];
 
 export default function ArchiveSortControls({
   sort,

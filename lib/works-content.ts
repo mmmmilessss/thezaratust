@@ -335,13 +335,13 @@ function getPreviewImages(type: WorkCategory, slug: string, images: WorkImage[],
   if (type === "photography") {
     const count = Math.min(20, images.length);
     const generated = Array.from({ length: count }, (_, index) => `/generated/hover-previews/${slug}/photo-${String(index).padStart(2, "0")}.jpg`);
-    if (generated.every((source) => existsSync(path.join(process.cwd(), "public", source)))) return generated;
+    if (generated.every((source) => existsSync(path.join(process.cwd(), "public", source)))) return generated.map((source) => `${source}?v=2`);
     return Array.from({ length: count }, (_, index) => images[Math.round(index * (images.length - 1) / Math.max(1, count - 1))].src);
   }
 
   if (type === "video" || type === "film") {
     const generated = Array.from({ length: 20 }, (_, index) => `/generated/hover-previews/${slug}/frame-${String(index).padStart(2, "0")}.jpg`);
-    if (generated.every((source) => existsSync(path.join(process.cwd(), "public", source)))) return generated;
+    if (generated.every((source) => existsSync(path.join(process.cwd(), "public", source)))) return generated.map((source) => `${source}?v=2`);
     const videoId = getYouTubeVideoId(youtubeUrl);
     return videoId
       ? [0, 1, 2, 3].map((frame) => `/works-youtube-thumbnail/${videoId}?frame=${frame}`)
