@@ -9,6 +9,8 @@ import PhotographyArtworkLayout from "@/components/PhotographyArtworkLayout";
 import { isAssignedProject, slugifyProjectName } from "@/lib/works";
 import Link from "next/link";
 import Image from "next/image";
+import AudioEmbed from "@/components/AudioEmbed";
+import MusicReactive from "@/components/MusicReactive";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -290,6 +292,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
               imageHeight={work.thumbnailHeight}
               title={work.title}
               links={work.links ?? {}}
+              audioEnvelope={work.audioEnvelope}
             />
           ) : (
             <Image
@@ -325,7 +328,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
           <p className="mb-3 text-xs uppercase tracking-[0.24em] font-gotham-medium opacity-50 sm:text-sm">
             {categoryLink}
           </p>
-          <h1 className="mb-4 text-lg font-gotham-bold sm:text-xl">{work.title}</h1>
+          {isMusicWork ? <MusicReactive envelope={work.audioEnvelope} className="mb-4"><h1 className="text-lg font-gotham-bold sm:text-xl">{work.title}</h1></MusicReactive> : <h1 className="mb-4 text-lg font-gotham-bold sm:text-xl">{work.title}</h1>}
           <div className="mb-8 text-xs font-gotham-medium opacity-60 sm:text-sm">{metadataLine}</div>
           {work.description ? (
             <p className="max-w-xl whitespace-pre-line text-xs leading-6 font-gotham-medium sm:text-sm sm:leading-7">
@@ -335,15 +338,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
 
           {spotifyEmbedUrl || soundCloudEmbedUrl ? (
             <div className="mt-10 w-full max-w-xl">
-              <iframe
-                src={spotifyEmbedUrl ?? soundCloudEmbedUrl ?? undefined}
-                title={`${work.title} audio player`}
-                width="100%"
-                height={spotifyEmbedUrl ? "380" : "166"}
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                loading="lazy"
-                className="w-full border-0"
-              />
+              {spotifyEmbedUrl ? <AudioEmbed platform="spotify" src={spotifyEmbedUrl} uri={spotifyEmbedUrl.replace("https://open.spotify.com/embed/", "spotify:").replaceAll("/", ":")} title={work.title} /> : <AudioEmbed platform="soundcloud" src={soundCloudEmbedUrl!} title={work.title} />}
             </div>
           ) : null}
 

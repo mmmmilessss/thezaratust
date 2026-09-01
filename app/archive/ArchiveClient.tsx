@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ArchiveSortControls from "@/components/ArchiveSortControls";
 import WorkGrid from "@/components/WorkGrid";
 import { groupWorksByYear, sortWorks } from "@/lib/works";
@@ -14,6 +14,12 @@ export default function ArchiveClient({ works }: ArchiveClientProps) {
   const [sort, setSort] = useState<ArchiveSort>("newest");
   const [groupByYear, setGroupByYear] = useState(true);
   const [randomSeed, setRandomSeed] = useState(0);
+  useEffect(() => {
+    const saved = sessionStorage.getItem("zaratust:archive-options");
+    const timer = setTimeout(() => { if (saved) { try { const value = JSON.parse(saved); setSort(value.sort ?? "newest"); setGroupByYear(value.groupByYear ?? true); } catch {} } }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+  useEffect(() => { sessionStorage.setItem("zaratust:archive-options", JSON.stringify({ sort, groupByYear })); }, [sort, groupByYear]);
   const sortedWorks = useMemo(() => {
     if (sort === "random") {
       void randomSeed;

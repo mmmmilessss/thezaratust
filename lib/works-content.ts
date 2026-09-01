@@ -331,6 +331,21 @@ function getYouTubeVideoId(youtubeUrl?: string) {
   return null;
 }
 
+function getPreviewImages(type: WorkCategory, images: WorkImage[], youtubeUrl?: string) {
+  if (type === "photography") {
+    return images.slice(0, 6).map((image) => image.src);
+  }
+
+  if (type === "video" || type === "film") {
+    const videoId = getYouTubeVideoId(youtubeUrl);
+    return videoId
+      ? [0, 1, 2, 3].map((frame) => `/works-youtube-thumbnail/${videoId}?frame=${frame}`)
+      : undefined;
+  }
+
+  return undefined;
+}
+
 function getArtworkThumbnail({
   type,
   slug,
@@ -400,6 +415,7 @@ function parseWorkFolder(folderName: string, sortOrder: number) {
   }
 
   const parsedDate = parseArtworkDate(parsed.date);
+  const audioEnvelopePath = path.join(process.cwd(), "public", "bass-envelopes", `${slug}.json`);
   const localThumbnailDimensions = localCoverFileName
     ? getJpegDimensions(path.join(folderPath, localCoverFileName))
     : null;
@@ -427,6 +443,8 @@ function parseWorkFolder(folderName: string, sortOrder: number) {
     thumbnailWidth: thumbnailDimensions.width,
     thumbnailHeight: thumbnailDimensions.height,
     images,
+    previewImages: getPreviewImages(parsed.type, images, parsed.links?.youtube),
+    audioEnvelope: existsSync(audioEnvelopePath) ? `/bass-envelopes/${slug}.json` : undefined,
     links: parsed.links,
     sortDateValue: parsedDate.sortDateValue,
     sortOrder,

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import InteractiveWorkMedia from "@/components/InteractiveWorkMedia";
 import type { Work } from "@/types/work";
 
 type WorkCardProps = {
@@ -20,19 +20,21 @@ export default function WorkCard({
   showCategory = true,
 }: WorkCardProps) {
   const isHoverMode = mode === "hover";
+  const cursorLabel = work.type === "music" ? "LISTEN ↗" : work.type === "film" || work.type === "video" ? "WATCH ↗" : "VIEW ↗";
 
   return (
-    <Link href={`/artwork/${work.slug}`} className="block">
+    <Link href={`/artwork/${work.slug}`} className="block" data-cursor-label={cursorLabel}>
       <article className={isHoverMode || dimOnHover ? "group" : undefined}>
         <div className="relative overflow-hidden">
-          <Image
+          <InteractiveWorkMedia
             src={work.thumbnail}
             alt={`${work.title} thumbnail`}
             width={work.thumbnailWidth}
             height={work.thumbnailHeight}
             sizes={sizes}
-            loading={eager ? "eager" : "lazy"}
-            className={`block h-auto w-full ${dimOnHover ? "transition-opacity group-hover:opacity-60" : ""}`}
+            eager={eager}
+            previews={work.previewImages}
+            dim={dimOnHover}
           />
 
           {isHoverMode ? (

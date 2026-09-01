@@ -39,6 +39,8 @@ export type Work = {
   duration?: string;
   credits?: string;
   images?: WorkImage[];
+  previewImages?: string[];
+  audioEnvelope?: string;
   links?: WorkLinks;
   sortDateValue: number;
   sortOrder: number;

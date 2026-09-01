@@ -23,6 +23,7 @@ export default function ProjectsPage() {
               key={projectName}
               href={`/projects/${slugifyProjectName(projectName)}`}
               className="group py-5"
+              data-cursor-label="ENTER ↗"
             >
               {details ? (
                 <span className="grid max-w-2xl">

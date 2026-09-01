@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "generate:video-artworks": "node scripts/generate-video-artworks.mjs"
+    "generate:video-artworks": "node scripts/generate-video-artworks.mjs",
+    "generate:bass-envelopes": "node scripts/generate-bass-envelopes.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.577.0",

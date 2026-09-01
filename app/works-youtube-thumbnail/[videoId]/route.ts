@@ -33,8 +33,14 @@ async function fetchThumbnail(url: string) {
   return response;
 }
 
-export async function GET(_request: Request, { params }: RouteProps) {
+export async function GET(request: Request, { params }: RouteProps) {
   const { videoId } = await params;
+  const requestedFrame = new URL(request.url).searchParams.get("frame");
+  const frame = requestedFrame !== null && /^[0-3]$/.test(requestedFrame) ? requestedFrame : null;
+  if (frame !== null) {
+    const response = await fetchThumbnail(`https://img.youtube.com/vi/${videoId}/${frame}.jpg`);
+    if (response) return new NextResponse(await response.arrayBuffer(), { headers: { "Content-Type": response.headers.get("content-type") ?? "image/jpeg", "Cache-Control": "public, max-age=86400, stale-while-revalidate=86400" } });
+  }
   const maxResUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
   const hqUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 

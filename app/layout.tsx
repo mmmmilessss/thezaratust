@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Footer from "../components/Footer";
+import MediaCursor from "@/components/MediaCursor";
+import NavigationMemory from "@/components/NavigationMemory";
+import { Suspense } from "react";
 
 const gothamBold = localFont({
   src: "../public/fonts/Gotham-Bold.ttf",
@@ -42,6 +45,8 @@ export default function RootLayout({
         className={`${gothamBold.variable} ${gothamMedium.variable} ${appleSdGothicNeoBold.variable} antialiased`}
       >
         <Header />
+        <MediaCursor />
+        <Suspense><NavigationMemory /></Suspense>
         {children}
         <Footer />
       </body>
