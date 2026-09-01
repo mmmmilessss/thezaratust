@@ -38,7 +38,7 @@ export default function WorkGrid({
 
   if (layout === "grid") {
     const layoutClassName = className
-      ? `grid grid-cols-2 gap-x-6 gap-y-6 md:grid-cols-3 lg:grid-cols-4 ${className}`
+      ? `grid grid-cols-2 gap-x-6 gap-y-6 md:grid-cols-3 ${className}`
       : "grid grid-cols-2 gap-x-6 gap-y-6 md:grid-cols-3 lg:grid-cols-4";
 
     return <div className={layoutClassName}>{cards}</div>;

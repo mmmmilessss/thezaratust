@@ -32,7 +32,14 @@ export default async function WorkCategoryPage({
         <h1 className="text-base sm:text-xl">{category.toUpperCase()}</h1>
       </section>
 
-      <WorkGrid works={works} className="lg:grid-cols-3" eagerFirst dimOnHover showCategory={false} />
+      <WorkGrid
+        works={works}
+        layout={category === "video" ? "grid" : "masonry"}
+        className="lg:grid-cols-3"
+        eagerFirst
+        dimOnHover
+        showCategory={false}
+      />
     </main>
   );
 }
