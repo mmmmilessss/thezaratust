@@ -17,18 +17,19 @@ type RouteProps = {
   }>;
 };
 
-export async function GET(_request: Request, { params }: RouteProps) {
+export async function GET(request: Request, { params }: RouteProps) {
   const { slug, filename } = await params;
   const folderName = getWorkFolderNameBySlug(slug);
 
-  if (!folderName) {
+  if (!folderName || new URL(request.url).searchParams.size > 0) {
     return new NextResponse("Not found", { status: 404 });
   }
 
-  const filePath = path.join(process.cwd(), "content", "works", folderName, filename);
+  const workFolder = path.resolve(process.cwd(), "content", "works", folderName);
+  const filePath = path.resolve(workFolder, filename);
   const extension = path.extname(filename).toLowerCase();
 
-  if (!existsSync(filePath) || !MIME_TYPES[extension]) {
+  if (path.dirname(filePath) !== workFolder || !existsSync(filePath) || !MIME_TYPES[extension]) {
     return new NextResponse("Not found", { status: 404 });
   }
 

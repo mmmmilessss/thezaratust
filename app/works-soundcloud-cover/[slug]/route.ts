@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getWorkBySlug } from "@/lib/works-content";
 import sharp from "sharp";
+import { fetchRemoteImage } from "@/lib/remote-image";
 
 export const runtime = "nodejs";
 
@@ -24,6 +25,7 @@ async function getSoundCloudArtworkUrl(soundCloudUrl: string) {
   oEmbedUrl.searchParams.set("url", soundCloudUrl);
 
   const response = await fetch(oEmbedUrl, {
+    signal: AbortSignal.timeout(10_000),
     next: {
       revalidate: 86400,
     },
@@ -39,8 +41,12 @@ async function getSoundCloudArtworkUrl(soundCloudUrl: string) {
     : null;
 }
 
-export async function GET(_request: Request, { params }: RouteProps) {
+export async function GET(request: Request, { params }: RouteProps) {
   const { slug } = await params;
+  const searchParams = new URL(request.url).searchParams;
+  if ([...searchParams.keys()].some((key) => key !== "v") || (searchParams.has("v") && searchParams.get("v") !== "3")) {
+    return new NextResponse("Not found", { status: 404 });
+  }
   const work = getWorkBySlug(slug);
   const soundCloudUrl = work?.links?.soundcloud;
 
@@ -54,15 +60,16 @@ export async function GET(_request: Request, { params }: RouteProps) {
     return new NextResponse("Not found", { status: 404 });
   }
 
-  const imageResponse = await fetch(artworkUrl, {
-    cache: "no-store",
-  });
-
-  if (!imageResponse.ok) {
+  let remoteImage;
+  try {
+    remoteImage = await fetchRemoteImage(artworkUrl, {
+      allowedHost: (hostname) => hostname === "sndcdn.com" || hostname.endsWith(".sndcdn.com"),
+    });
+  } catch {
     return new NextResponse("Not found", { status: 404 });
   }
 
-  const imageBuffer = await sharp(Buffer.from(await imageResponse.arrayBuffer()))
+  const imageBuffer = await sharp(remoteImage.buffer, { limitInputPixels: 40_000_000 })
     .rotate()
     .resize(1600, 1600, { fit: "inside", withoutEnlargement: true })
     .jpeg({ quality: 90, mozjpeg: true })
