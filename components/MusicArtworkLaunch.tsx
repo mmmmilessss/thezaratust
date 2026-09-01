@@ -41,7 +41,7 @@ export default function MusicArtworkLaunch({
         aria-expanded={isOpen}
         aria-label={`Open listening platforms for ${title}`}
       >
-        <MusicReactive envelope={audioEnvelope}><Image
+        <MusicReactive envelope={audioEnvelope} colorSource={image}><Image
           src={image}
           alt={title}
           width={imageWidth}

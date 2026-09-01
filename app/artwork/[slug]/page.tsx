@@ -333,7 +333,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
           <p className="mb-3 text-xs uppercase tracking-[0.24em] font-gotham-medium opacity-50 sm:text-sm">
             {categoryLink}
           </p>
-          {isMusicWork ? <MusicReactive envelope={work.audioEnvelope} className="mb-4"><h1 className="text-lg font-gotham-bold sm:text-xl">{work.title}</h1></MusicReactive> : <h1 className="mb-4 text-lg font-gotham-bold sm:text-xl">{work.title}</h1>}
+          {isMusicWork ? <MusicReactive envelope={work.audioEnvelope} colorSource={mainImage.src} className="mb-4"><h1 className="text-lg font-gotham-bold sm:text-xl">{work.title}</h1></MusicReactive> : <h1 className="mb-4 text-lg font-gotham-bold sm:text-xl">{work.title}</h1>}
           <div className="mb-8 text-xs font-gotham-medium opacity-60 sm:text-sm">{metadataLine}</div>
           {work.description ? (
             <p className="max-w-xl whitespace-pre-line text-xs leading-6 font-gotham-medium sm:text-sm sm:leading-7">
