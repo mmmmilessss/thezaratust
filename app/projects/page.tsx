@@ -22,7 +22,7 @@ export default function ProjectsPage() {
             <Link
               key={projectName}
               href={`/projects/${slugifyProjectName(projectName)}`}
-              className="group py-5"
+              className="group py-5 transition-opacity hover:opacity-70"
               data-cursor-label="ENTER ↗"
             >
               {details ? (

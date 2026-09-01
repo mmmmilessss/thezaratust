@@ -23,8 +23,8 @@ export default function ArchiveSortControls({
             key={option}
             type="button"
             onClick={() => onChange(option)}
-            className={`text-xs tracking-wide transition sm:text-sm ${
-              isActive ? "text-gray-400" : "text-gray-400 hover:text-white"
+            className={`text-xs tracking-wide transition-opacity hover:opacity-50 sm:text-sm ${
+              isActive ? "text-gray-400" : "text-gray-400"
             }`}
           >
             {option.toUpperCase()}

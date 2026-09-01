@@ -44,7 +44,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
               </div>
             ) : null}
           </div>
-          <Link href="/projects" className="text-xs font-gotham-medium opacity-70 hover:opacity-100 sm:text-sm">
+          <Link href="/projects" className="text-xs font-gotham-medium opacity-70 transition-opacity hover:opacity-40 sm:text-sm">
             ALL PROJECTS
           </Link>
         </div>

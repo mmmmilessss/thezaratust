@@ -33,7 +33,7 @@ export default function NavigationLinks({
           <Link
             href={item.href}
             key={item.href}
-            className={`${linkClassName ?? ""} font-gotham-bold ${
+            className={`${linkClassName ?? ""} font-gotham-bold transition-opacity hover:opacity-60 ${
               enableActiveState && isActive ? "text-[0.9em] opacity-70" : ""
             }`.trim()}
             onClick={onNavigate}

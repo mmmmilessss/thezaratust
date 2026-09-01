@@ -51,7 +51,7 @@ export default function ArchiveClient({ works }: ArchiveClientProps) {
         <button
           type="button"
           onClick={() => setGroupByYear((current) => !current)}
-          className="text-xs font-gotham-medium opacity-70 transition hover:opacity-100 sm:text-sm"
+          className="text-xs font-gotham-medium opacity-70 transition-opacity hover:opacity-40 sm:text-sm"
         >
           {groupByYear ? "GROUPED BY YEAR" : "FLAT GRID"}
         </button>

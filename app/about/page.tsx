@@ -76,7 +76,7 @@ export default function AboutPage() {
                 href={item.href}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-3 hover:opacity-60"
+                className="flex items-center gap-3 transition-opacity hover:opacity-60"
               >
                 <Image
                   src={item.iconSrc}

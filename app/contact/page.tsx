@@ -7,7 +7,7 @@ export default function ContactPage() {
         <h1 className="mb-6 text-xl sm:text-2xl">CONTACT</h1>
         <Link
           href="mailto:contact@zaratust.com"
-          className="font-gotham-medium hover:opacity-60"
+          className="font-gotham-medium transition-opacity hover:opacity-60"
         >
           contact@zaratust.com
         </Link>

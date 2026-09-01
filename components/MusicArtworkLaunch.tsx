@@ -64,7 +64,7 @@ export default function MusicArtworkLaunch({
               href={links[key]}
               target="_blank"
               rel="noreferrer"
-              className="hover:opacity-60"
+              className="transition-opacity hover:opacity-60"
             >
               {label}
             </a>
