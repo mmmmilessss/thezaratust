@@ -18,16 +18,28 @@ for(const folder of readdirSync(works,{withFileTypes:true}).filter((entry)=>entr
   }
   if(type!=="film"&&type!=="video")continue;
   const youtube=data.match(/^\s{2}youtube:\s*(.+)$/m)?.[1]?.trim();if(!youtube)continue;
-  const versionMarker=join(previewDir,".selection-v2");
+  const dedupeConsecutive=slug==="film-thuglife";
+  const versionMarker=join(previewDir,dedupeConsecutive?".selection-v3":".selection-v2");
   if(existsSync(versionMarker)&&Array.from({length:20},(_,index)=>join(previewDir,`frame-${String(index).padStart(2,"0")}.jpg`)).every(existsSync)){console.log(`CACHED ${slug}`);continue;}
   const video=join(cache,`${slug}.mp4`);
   if(!existsSync(video)){const download=spawnSync(downloader,["--no-playlist","--no-update","-f","bv*[ext=mp4][vcodec^=avc1][height<=720]","-o",video,youtube],{stdio:"inherit"});if(download.status!==0){console.warn(`UNRESOLVED ${slug}: video download failed`);continue;}}
   const candidates=join(cache,`${slug}-candidates`);rmSync(candidates,{recursive:true,force:true});mkdirSync(candidates,{recursive:true});
   const extraction=spawnSync("swift",[join(root,"scripts/extract-hover-frames.swift"),video,candidates,"60"],{stdio:"inherit"});
   if(extraction.status!==0){console.warn(`UNRESOLVED ${slug}: frame extraction failed`);continue;}
-  const measured=[];
-  for(const file of readdirSync(candidates).filter((name)=>name.endsWith(".jpg")).sort()){const stats=await sharp(join(candidates,file)).stats();const brightness=stats.channels.slice(0,3).reduce((sum,channel)=>sum+channel.mean,0)/3;if(brightness>10)measured.push(file);}
+  const measured=[];let previousSignature;
+  for(const file of readdirSync(candidates).filter((name)=>name.endsWith(".jpg")).sort()){
+    const source=join(candidates,file),stats=await sharp(source).stats();
+    const brightness=stats.channels.slice(0,3).reduce((sum,channel)=>sum+channel.mean,0)/3;
+    if(brightness<=10)continue;
+    if(dedupeConsecutive){
+      const signature=await sharp(source).resize(16,16,{fit:"fill"}).greyscale().raw().toBuffer();
+      const difference=previousSignature?signature.reduce((sum,value,index)=>sum+Math.abs(value-previousSignature[index]),0)/signature.length:Infinity;
+      if(difference<3)continue;
+      previousSignature=signature;
+    }
+    measured.push(file);
+  }
   const pool=measured.length>=20?measured:readdirSync(candidates).filter((name)=>name.endsWith(".jpg")).sort();mkdirSync(previewDir,{recursive:true});
   for(let index=0;index<20;index++){const source=pool[Math.round(index*(pool.length-1)/19)];copyFileSync(join(candidates,source),join(previewDir,`frame-${String(index).padStart(2,"0")}.jpg`));}
-  writeFileSync(versionMarker,"60 candidates; near-black frames excluded\n");console.log(`GENERATED ${slug}: 20 frames from ${pool.length} usable candidates`);
+  writeFileSync(versionMarker,dedupeConsecutive?"60 candidates; near-black and consecutive near-duplicate frames excluded\n":"60 candidates; near-black frames excluded\n");console.log(`GENERATED ${slug}: 20 frames from ${pool.length} usable candidates`);
 }

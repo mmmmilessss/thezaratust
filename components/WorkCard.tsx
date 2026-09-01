@@ -34,8 +34,11 @@ export default function WorkCard({
             sizes={sizes}
             eager={eager}
             previews={work.previewImages}
-            dim={dimOnHover}
           />
+
+          {dimOnHover ? (
+            <div className="pointer-events-none absolute inset-0 z-20 bg-black/0 transition-colors duration-150 group-hover:bg-black/40" />
+          ) : null}
 
           {isHoverMode ? (
             <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-black/0 p-4 opacity-0 transition group-hover:bg-black/35 group-hover:opacity-100">

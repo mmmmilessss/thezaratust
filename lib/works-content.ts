@@ -341,7 +341,7 @@ function getPreviewImages(type: WorkCategory, slug: string, images: WorkImage[],
 
   if (type === "video" || type === "film") {
     const generated = Array.from({ length: 20 }, (_, index) => `/generated/hover-previews/${slug}/frame-${String(index).padStart(2, "0")}.jpg`);
-    if (generated.every((source) => existsSync(path.join(process.cwd(), "public", source)))) return generated.map((source) => `${source}?v=2`);
+    if (generated.every((source) => existsSync(path.join(process.cwd(), "public", source)))) return generated.map((source) => `${source}?v=${slug === "film-thuglife" ? 3 : 2}`);
     const videoId = getYouTubeVideoId(youtubeUrl);
     return videoId
       ? [0, 1, 2, 3].map((frame) => `/works-youtube-thumbnail/${videoId}?frame=${frame}`)

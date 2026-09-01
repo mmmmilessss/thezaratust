@@ -3,9 +3,9 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-type Props = { src: string; alt: string; width: number; height: number; sizes: string; eager: boolean; previews?: string[]; dim?: boolean };
+type Props = { src: string; alt: string; width: number; height: number; sizes: string; eager: boolean; previews?: string[] };
 
-export default function InteractiveWorkMedia({ src, alt, width, height, sizes, eager, previews = [], dim }: Props) {
+export default function InteractiveWorkMedia({ src, alt, width, height, sizes, eager, previews = [] }: Props) {
   const [active, setActive] = useState(-1);
   const [enabled, setEnabled] = useState(false);
   const reducedMotion = useRef(false);
@@ -60,11 +60,11 @@ export default function InteractiveWorkMedia({ src, alt, width, height, sizes, e
   return (
     <div ref={container} className="relative bg-black" style={{ aspectRatio: `${width}/${height}` }} onPointerEnter={enter} onPointerMove={move} onPointerLeave={leave}>
       <Image src={src} alt="" fill sizes="24px" aria-hidden className={`object-cover [image-rendering:pixelated] transition-opacity duration-200 ${loaded ? "opacity-0" : "opacity-70"}`} />
-      <Image src={src} alt={alt} fill sizes={sizes} loading={eager ? "eager" : "lazy"} onLoad={() => setTimeout(() => setLoaded(true), 180)} className={`object-cover transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"} ${dim ? "group-hover:opacity-60" : ""}`} />
+      <Image src={src} alt={alt} fill sizes={sizes} loading={eager ? "eager" : "lazy"} onLoad={() => setTimeout(() => setLoaded(true), 180)} className={`object-cover transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"}`} />
       {enabled && active >= 0 ? previews.map((preview, index) => (
         // Generated previews are already 1200px / JPEG 86; using their exact URL also makes the near-viewport decode cache effective.
         // eslint-disable-next-line @next/next/no-img-element
-        <img key={preview} src={preview} alt="" aria-hidden loading="eager" className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-100 ${index === active ? "opacity-100" : "opacity-0"} ${dim ? "group-hover:opacity-60" : ""}`} />
+        <img key={preview} src={preview} alt="" aria-hidden loading="eager" className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-100 ${index === active ? "opacity-100" : "opacity-0"}`} />
       )) : null}
     </div>
   );
