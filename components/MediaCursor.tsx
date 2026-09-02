@@ -39,5 +39,5 @@ export default function MediaCursor() {
     };
   }, []);
 
-  return <div ref={ref} aria-hidden className={`pointer-events-none fixed left-0 top-0 z-[100] text-[9px] tracking-[0.08em] text-white [text-shadow:0_2px_5px_rgba(0,0,0,1),0_0_12px_rgba(0,0,0,1)] transition-opacity ${label ? "opacity-100" : "opacity-0"}`}>{label}</div>;
+  return <div ref={ref} aria-hidden className={`pointer-events-none fixed left-0 top-0 z-[100] text-[9px] tracking-[0.08em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)] transition-opacity ${label ? "opacity-100" : "opacity-0"}`}>{label}</div>;
 }
