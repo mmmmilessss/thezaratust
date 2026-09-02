@@ -42,6 +42,10 @@ a, button, [role="button"], summary, label[for], select {
     opacity: 0.55;
     transition-duration: 55ms;
   }
+
+  a[data-work-card]:active {
+    opacity: 1;
+  }
 }
 
 :lang(ko) {

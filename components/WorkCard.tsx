@@ -23,8 +23,8 @@ export default function WorkCard({
   const cursorLabel = work.type === "music" ? "LISTEN" : work.type === "film" || work.type === "video" ? "WATCH" : "VIEW";
 
   return (
-    <Link href={`/artwork/${work.slug}`} className="block" data-cursor-label={cursorLabel}>
-      <article className={isHoverMode || dimOnHover ? "group" : undefined}>
+    <Link href={`/artwork/${work.slug}`} className="block" data-cursor-label={cursorLabel} data-work-card>
+      <article className="group">
         <div className="relative overflow-hidden">
           <InteractiveWorkMedia
             src={work.thumbnail}
@@ -37,17 +37,15 @@ export default function WorkCard({
           />
 
           {dimOnHover ? (
-            <div className="pointer-events-none absolute inset-0 z-20 bg-black/0 transition-colors duration-150 group-hover:bg-black/40" />
+            <div className="pointer-events-none absolute inset-0 z-20 bg-black/0 transition-colors duration-150 md:group-hover:bg-black/40" />
           ) : null}
 
-          {isHoverMode ? (
-            <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-black/0 p-4 opacity-0 transition group-hover:bg-black/35 group-hover:opacity-100">
+          <div className={`pointer-events-none absolute inset-0 z-30 flex flex-col justify-end bg-black/0 p-4 opacity-0 transition group-active:bg-black/35 group-active:opacity-100 md:group-hover:bg-black/35 md:group-hover:opacity-100 ${isHoverMode ? "" : "md:hidden"}`}>
               <p lang={work.slug === "winter-vacation" ? "ko" : undefined} className={work.slug === "winter-vacation" ? "!text-[14px] font-gotham-bold sm:!text-base" : "text-xs font-gotham-bold sm:text-sm"}>{work.title}</p>
               <p className="text-xs font-gotham-medium opacity-60 sm:text-sm">
                 {showCategory ? `${work.type.toUpperCase()} · ` : ""}{work.displayDate}
               </p>
-            </div>
-          ) : null}
+          </div>
         </div>
 
         {isHoverMode ? null : (
