@@ -24,6 +24,26 @@ a, button, [role="button"], summary, label[for], select {
   cursor: pointer;
 }
 
+@media (max-width: 767px) {
+  a, button, [role="button"], summary, label[for], select {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition-property: opacity;
+    transition-duration: 140ms;
+    transition-timing-function: ease-out;
+  }
+
+  a:active,
+  button:not(:disabled):active,
+  [role="button"]:active,
+  summary:active,
+  label[for]:active,
+  select:active {
+    opacity: 0.55;
+    transition-duration: 55ms;
+  }
+}
+
 :lang(ko) {
   font-family: var(--font-apple-sd-gothic-neo-bold), sans-serif;
   font-size: 1.1em;
