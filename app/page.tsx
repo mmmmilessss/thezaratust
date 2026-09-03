@@ -14,12 +14,12 @@ export const metadata = createPageMetadata({
 });
 
 const SELECTED_WORK_SLUGS = [
+  "situation",
   "tiny-thoughts-club",
   "film-the-free-trial",
   "film-thuglife",
   "acrobatic-001",
   "light003",
-  "winter-vacation",
 ] as const;
 
 export default function HomePage() {

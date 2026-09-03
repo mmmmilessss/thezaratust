@@ -46,7 +46,7 @@ export default function ProjectColophon({ archiveId, data, credits, tracks = [] 
   return (
     <section className="mt-20 sm:mt-28" aria-labelledby="project-colophon-heading">
       <h2 id="project-colophon-heading" className="mb-5 text-xs tracking-[0.2em] font-gotham-bold sm:mb-6 sm:text-sm">
-        PROJECT COLOPHON
+        COLOPHON
       </h2>
 
       <dl className="border-y border-white/15">
