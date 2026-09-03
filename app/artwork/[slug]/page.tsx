@@ -367,7 +367,10 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
           ) : null}
         </div>
       </div>
-      <TrackCredits tracks={trackCredits} />
+      <TrackCredits
+        tracks={trackCredits}
+        defaultCredit={work.type === "music" ? "Written, produced, performed & engineered by CRYSTYN" : undefined}
+      />
       {artworkNavigation}
     </main>
   );
