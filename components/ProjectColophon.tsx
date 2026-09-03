@@ -36,6 +36,20 @@ function SimpleCredit({ credit }: { credit: string }) {
   );
 }
 
+function CreditContent({ credits }: { credits: string }) {
+  if (credits.includes("|")) return <FilmCredits credits={credits} />;
+
+  return (
+    <div className="space-y-2">
+      {credits.split("\n").map((credit) => credit.trim()).filter(Boolean).map((credit) => (
+        <p key={credit} className="text-[10px] leading-5 tracking-[0.08em] font-gotham-medium sm:text-xs sm:leading-6">
+          <SimpleCredit credit={credit} />
+        </p>
+      ))}
+    </div>
+  );
+}
+
 export default function ProjectColophon({ archiveId, data, credits, tracks = [] }: ProjectColophonProps) {
   const fields = FIELD_ORDER.flatMap(([key, label]) => {
     const value = data?.[key];
@@ -61,8 +75,11 @@ export default function ProjectColophon({ archiveId, data, credits, tracks = [] 
           <div className="grid gap-5 border-b border-white/15 py-6 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-8 sm:py-8">
             <dt className="text-[9px] tracking-[0.16em] opacity-45 sm:text-[10px]">CREDITS</dt>
             <dd>
-              {tracks.length ? <TrackCredits tracks={tracks} /> : credits?.includes("|") ? <FilmCredits credits={credits} /> : credits ? (
-                <p className="text-[10px] leading-5 tracking-[0.08em] font-gotham-medium sm:text-xs sm:leading-6"><SimpleCredit credit={credits} /></p>
+              {tracks.length ? <TrackCredits tracks={tracks} /> : null}
+              {credits ? (
+                <div className={tracks.length ? "mt-8 border-t border-white/15 pt-7" : undefined}>
+                  <CreditContent credits={credits} />
+                </div>
               ) : null}
             </dd>
           </div>
