@@ -2,7 +2,10 @@ import type { Track } from "@/lib/track-credits";
 
 type TrackCreditsProps = {
   tracks: Track[];
-  defaultCredit?: string;
+  defaultCredit?: {
+    role: string;
+    name: string;
+  };
 };
 
 export default function TrackCredits({ tracks, defaultCredit }: TrackCreditsProps) {
@@ -39,7 +42,10 @@ export default function TrackCredits({ tracks, defaultCredit }: TrackCreditsProp
         </ol>
       ) : (
         <div className="border-y border-white/15 py-8 sm:py-10">
-          <p className="text-[10px] leading-5 tracking-[0.08em] font-gotham-medium sm:text-xs sm:leading-6">{defaultCredit}</p>
+          <p className="text-[10px] leading-5 tracking-[0.08em] font-gotham-medium sm:text-xs sm:leading-6">
+            <span className="opacity-45">{defaultCredit?.role}</span>{" "}
+            <span>{defaultCredit?.name}</span>
+          </p>
         </div>
       )}
     </section>
