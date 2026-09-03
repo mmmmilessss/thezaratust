@@ -12,6 +12,7 @@ import Image from "next/image";
 import AudioEmbed from "@/components/AudioEmbed";
 import MusicReactive from "@/components/MusicReactive";
 import TrackCredits from "@/components/TrackCredits";
+import FilmCredits from "@/components/FilmCredits";
 import { getTrackCredits } from "@/lib/track-credits";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -175,12 +176,6 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
   const spotifyEmbedUrl = getSpotifyEmbedUrl(work.links?.spotify);
   const soundCloudEmbedUrl = spotifyEmbedUrl ? null : getSoundCloudEmbedUrl(work.links?.soundcloud);
   const youTubeEmbedUrl = getYouTubeEmbedUrl(work.links?.youtube);
-  const creditRows = work.credits
-    ? work.credits.split("\n").filter(Boolean).map((credit) => {
-        const [role, ...valueParts] = credit.split("|");
-        return { role: role.trim(), value: valueParts.join("|").trim() };
-      })
-    : [];
   const trackCredits = getTrackCredits(work.slug);
   const projectName = isAssignedProject(work.project) ? work.project : null;
   const projectHref = projectName ? `/projects/${slugifyProjectName(projectName)}` : null;
@@ -262,21 +257,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
             </div>
           ) : null}
 
-          {creditRows.length ? (
-            <section className="max-w-3xl" aria-labelledby="credits-heading">
-              <h2 id="credits-heading" className="mb-6 text-xs tracking-[0.2em] font-gotham-bold sm:text-sm">
-                CREDITS
-              </h2>
-              <dl className="grid grid-cols-[6.5rem_1fr] gap-x-6 gap-y-3 text-xs leading-5 font-gotham-medium sm:grid-cols-[8rem_1fr] sm:text-sm sm:leading-6">
-                {creditRows.map((credit, index) => (
-                  <div key={`${credit.role}-${credit.value}-${index}`} className="contents">
-                    <dt className="opacity-50">{credit.role}</dt>
-                    <dd>{credit.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            </section>
-          ) : null}
+          {work.credits ? <FilmCredits credits={work.credits} /> : null}
 
           {work.description ? (
             <p className="max-w-3xl whitespace-pre-line text-xs leading-6 font-gotham-medium sm:text-sm sm:leading-7">
