@@ -2,8 +2,14 @@ type: music
 format: single
 title: CLUB
 date: 2022.11.01
+archiveId: ZRST-022-002
 project: none
 description: A Guy met a girl in a club.
+credits: Written, produced, performed & engineered by CRYSTYN
+
+colophon:
+  format: SINGLE
+  runtime: 3:15
 
 links:
   spotify: https://open.spotify.com/album/7eB93agfNcUUz139AYt3C3?si=4IbikXA8R_WiuC_2yG1k_Q

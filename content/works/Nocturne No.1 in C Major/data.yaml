@@ -2,8 +2,14 @@ type: music
 format: single
 title: Nocturne No.1 in C Major
 date: 2026.01.25
+archiveId: ZRST-026-001
 project: none
 description: An Impromptu.
+credits: Written, produced, performed & engineered by CRYSTYN
+
+colophon:
+  format: SINGLE
+  runtime: 3:36
 
 links:
   soundcloud: https://soundcloud.com/crystalcrystyn/nocturne-no1-in-c-major

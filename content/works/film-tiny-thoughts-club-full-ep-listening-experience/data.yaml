@@ -1,8 +1,13 @@
 type: video
 title: [TINY THOUGHTS CLUB] – FULL EP LISTENING EXPERIENCE
 date: 2026.02.27
+archiveId: ZRST-026-004
 project: TINY THOUGHTS CLUB
 description: ""
+
+colophon:
+  runtime: 13 MIN
+  aspectRatio: 16:9
 
 links:
   youtube: https://youtu.be/5ault9EG8-I

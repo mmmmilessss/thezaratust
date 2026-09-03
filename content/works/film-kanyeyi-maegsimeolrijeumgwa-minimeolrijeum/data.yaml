@@ -1,8 +1,13 @@
 type: video
 title: "칸예의 맥시멀리즘과 미니멀리즘"
 date: 2022.05.21
+archiveId: ZRST-022-001
 project: none
 description: ""
+
+colophon:
+  runtime: 17 MIN
+  aspectRatio: 16:9
 
 links:
   youtube: https://youtu.be/25sPk1UlS1k

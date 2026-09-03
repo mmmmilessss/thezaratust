@@ -2,8 +2,14 @@ type: music
 format: single
 title: light003
 date: 2026.08.21
+archiveId: ZRST-026-005
 project: none
 description: lights, flashing.
+credits: Written, produced, performed & engineered by CRYSTYN
+
+colophon:
+  format: SINGLE
+  runtime: 2:43
 
 links:
   soundcloud: https://soundcloud.com/crystalcrystyn/light003

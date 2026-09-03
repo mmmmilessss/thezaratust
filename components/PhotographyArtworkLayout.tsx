@@ -6,9 +6,9 @@ import { useEffect, useState, type ReactNode } from "react";
 import MasonryGrid from "@/components/MasonryGrid";
 import type { WorkImage } from "@/types/work";
 
-type Props = { category: ReactNode; title: string; metadata: ReactNode; description?: string; images: WorkImage[]; navigation?: ReactNode };
+type Props = { category: ReactNode; title: string; metadata: ReactNode; description?: string; images: WorkImage[]; colophon?: ReactNode; navigation?: ReactNode };
 
-export default function PhotographyArtworkLayout({ category, title, metadata, description, images, navigation }: Props) {
+export default function PhotographyArtworkLayout({ category, title, metadata, description, images, colophon, navigation }: Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const activeImage = activeIndex === null ? null : images[activeIndex];
 
@@ -56,6 +56,7 @@ export default function PhotographyArtworkLayout({ category, title, metadata, de
       </section>
 
       {images.length > 1 ? <MasonryGrid items={images.slice(1).map((image, index) => imageButton(image, index + 1))} className="grid grid-cols-2 items-start gap-4 sm:gap-6 lg:grid-cols-3" /> : null}
+      {colophon}
       {navigation}
 
       {activeImage && activeIndex !== null ? (

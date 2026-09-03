@@ -1,8 +1,13 @@
 type: video
 title: "수학 여행"
 date: 2024.07.13
+archiveId: ZRST-024-001
 project: none
 description: ""
+
+colophon:
+  runtime: 3 MIN
+  aspectRatio: 16:9
 
 links:
   youtube: https://youtu.be/CLhgEqfHKlA

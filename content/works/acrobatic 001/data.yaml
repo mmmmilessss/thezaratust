@@ -1,5 +1,11 @@
 type: photography
 title: ACROBATIC 001
 date: 2026.02.14
+archiveId: ZRST-026-002
 project: ACROBATIC
 description: portrait study
+
+colophon:
+  camera: Canon EOS 50D
+  imageCount: 14
+  location: Changwon, Korea

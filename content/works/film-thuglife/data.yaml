@@ -1,8 +1,13 @@
 type: video
 title: ThugLife.
 date: 2023.12.21
+archiveId: ZRST-023-001
 project: none
 description: ""
+
+colophon:
+  runtime: 1 MIN
+  aspectRatio: 4:3
 
 credits: |
   DIRECTION & PRODUCTION

@@ -2,8 +2,14 @@ type: music
 format: single
 title: SNOW
 date: 2022.12.01
+archiveId: ZRST-022-003
 project: none
 description: It was cold, bloody winter...
+credits: Written, produced, performed & engineered by CRYSTYN
+
+colophon:
+  format: SINGLE
+  runtime: 3:08
 
 links:
   spotify: https://open.spotify.com/album/5Izl7t876t0SlVa3oO8mA0?si=aMaSfyuySfSYbS1_J0sffA

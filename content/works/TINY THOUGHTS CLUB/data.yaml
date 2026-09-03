@@ -2,8 +2,14 @@ type: music
 format: ep
 title: TINY THOUGHTS CLUB
 date: 2026.02.27
+archiveId: ZRST-026-003
 project: TINY THOUGHTS CLUB
 description: A collaboration with RexCudy.
+
+colophon:
+  format: EP
+  runtime: 13:08
+  tracks: 5
 
 links:
   spotify: https://open.spotify.com/album/6F2wGLLLeMPGgASbMluF2F

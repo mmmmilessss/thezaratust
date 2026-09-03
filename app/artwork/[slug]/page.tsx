@@ -11,8 +11,7 @@ import Link from "next/link";
 import Image from "next/image";
 import AudioEmbed from "@/components/AudioEmbed";
 import MusicReactive from "@/components/MusicReactive";
-import TrackCredits from "@/components/TrackCredits";
-import FilmCredits from "@/components/FilmCredits";
+import ProjectColophon from "@/components/ProjectColophon";
 import { getTrackCredits } from "@/lib/track-credits";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -192,6 +191,14 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
   const artworkNavigation = (
     <ArtworkNavigation previous={previousWork} next={nextWork} />
   );
+  const projectColophon = (
+    <ProjectColophon
+      archiveId={work.archiveId}
+      data={work.colophon}
+      credits={work.credits}
+      tracks={trackCredits}
+    />
+  );
   const categoryLink = (
     <Link
       href={`/work/${work.type}`}
@@ -226,6 +233,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
         metadata={metadataLine}
         description={work.description}
         images={availableImages}
+        colophon={projectColophon}
         navigation={artworkNavigation}
       />
     );
@@ -257,14 +265,13 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
             </div>
           ) : null}
 
-          {work.credits ? <FilmCredits credits={work.credits} /> : null}
-
           {work.description ? (
             <p className="max-w-3xl whitespace-pre-line text-xs leading-6 font-gotham-medium sm:text-sm sm:leading-7">
               {work.description}
             </p>
           ) : null}
         </div>
+        {projectColophon}
         {artworkNavigation}
       </main>
     );
@@ -348,13 +355,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
           ) : null}
         </div>
       </div>
-      <TrackCredits
-        tracks={trackCredits}
-        defaultCredit={work.type === "music" ? {
-          role: "Written, produced, performed & engineered by",
-          name: "CRYSTYN",
-        } : undefined}
-      />
+      {projectColophon}
       {artworkNavigation}
     </main>
   );

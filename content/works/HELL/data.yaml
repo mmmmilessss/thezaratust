@@ -2,8 +2,14 @@ type: music
 format: single
 title: Hell
 date: 2025.02.25
+archiveId: ZRST-025-001
 project: none
 description: From the bottom.
+credits: Written, produced, performed & engineered by CRYSTYN
+
+colophon:
+  format: SINGLE
+  runtime: 4:16
 
 links:
   soundcloud: https://soundcloud.com/crystalcrystyn/hell

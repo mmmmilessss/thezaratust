@@ -1,10 +1,15 @@
 type: film
 title: The Free Trial
 date: 2025.07.20
+archiveId: ZRST-025-002
 project: none
 description: ""
 displayType: Short Film
 duration: 11 min
+
+colophon:
+  runtime: 11 MIN
+  aspectRatio: 2.39:1
 credits: |
   DIRECTION & PRODUCTION
   Director | SO SEONG MIN, PARK GEON WOO

@@ -5,6 +5,7 @@ import path from "node:path";
 import {
   WORK_CATEGORIES,
   type MusicFormat,
+  type ProjectColophonData,
   type Work,
   type WorkCategory,
   type WorkImage,
@@ -15,6 +16,20 @@ import { sortWorks } from "@/lib/works";
 const CONTENT_ROOT = path.join(process.cwd(), "content", "works");
 const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp"]);
 const COVER_FILE_NAMES = ["cover.jpg", "cover.jpeg", "cover.png", "cover.webp"] as const;
+const COLOPHON_KEYS = new Set<keyof ProjectColophonData>([
+  "format",
+  "runtime",
+  "aspectRatio",
+  "resolution",
+  "camera",
+  "location",
+  "imageCount",
+  "tracks",
+  "material",
+  "dimensions",
+  "pieces",
+]);
+const ARCHIVE_ID_PATTERN = /^ZRST-(\d{3})-(\d{3})$/;
 const MONTH_ABBREVIATIONS = [
   "JAN",
   "FEB",
@@ -176,10 +191,12 @@ function parseYamlFile(filePath: string) {
     description?: string;
     displayType?: string;
     duration?: string;
+    archiveId?: string;
+    colophon?: ProjectColophonData;
     credits?: string;
     links?: WorkLinks;
   } = {};
-  let currentSection: "links" | "description" | "credits" | null = null;
+  let currentSection: "links" | "colophon" | "description" | "credits" | null = null;
   let descriptionIndent: number | null = null;
   const descriptionLines: string[] = [];
   const creditsLines: string[] = [];
@@ -219,6 +236,12 @@ function parseYamlFile(filePath: string) {
         if (key === "links") {
           result.links = {};
           currentSection = "links";
+          continue;
+        }
+
+        if (key === "colophon") {
+          result.colophon = {};
+          currentSection = "colophon";
           continue;
         }
 
@@ -262,6 +285,12 @@ function parseYamlFile(filePath: string) {
         continue;
       }
 
+      if (key === "archiveId") {
+        result.archiveId = value;
+        currentSection = null;
+        continue;
+      }
+
       if (key === "type" || key === "title" || key === "date" || key === "description" || key === "credits") {
         result[key] = value;
         currentSection = null;
@@ -282,6 +311,23 @@ function parseYamlFile(filePath: string) {
 
       if (value) {
         result.links[key] = value;
+      }
+
+      continue;
+    }
+
+    if (currentSection === "colophon") {
+      const separatorIndex = trimmed.indexOf(":");
+
+      if (separatorIndex === -1 || !result.colophon) {
+        continue;
+      }
+
+      const key = trimmed.slice(0, separatorIndex).trim() as keyof ProjectColophonData;
+      const value = parseScalar(trimmed.slice(separatorIndex + 1));
+
+      if (COLOPHON_KEYS.has(key) && value) {
+        result.colophon[key] = value;
       }
 
       continue;
@@ -399,8 +445,13 @@ function parseWorkFolder(folderName: string, sortOrder: number) {
   const dataPath = path.join(folderPath, "data.yaml");
   const parsed = parseYamlFile(dataPath);
 
-  if (!parsed.title || !parsed.type || !parsed.date || !isWorkCategory(parsed.type)) {
+  if (!parsed.title || !parsed.type || !parsed.date || !parsed.archiveId || !isWorkCategory(parsed.type)) {
     throw new Error(`Invalid data.yaml for artwork "${slug}".`);
+  }
+
+  const archiveIdMatch = parsed.archiveId.match(ARCHIVE_ID_PATTERN);
+  if (!archiveIdMatch || archiveIdMatch[2] === "000") {
+    throw new Error(`Invalid archive ID "${parsed.archiveId}" for artwork "${slug}".`);
   }
 
   const imageFiles = getArtworkImageFileNames(folderPath);
@@ -420,6 +471,10 @@ function parseWorkFolder(folderName: string, sortOrder: number) {
   }
 
   const parsedDate = parseArtworkDate(parsed.date);
+  const archiveYear = String(parsedDate.year).slice(-3).padStart(3, "0");
+  if (archiveIdMatch[1] !== archiveYear) {
+    throw new Error(`Archive ID "${parsed.archiveId}" does not match artwork year ${parsedDate.year}.`);
+  }
   const audioEnvelopePath = path.join(process.cwd(), "public", "bass-envelopes", `${slug}.json`);
   const localThumbnailDimensions = localCoverFileName
     ? getJpegDimensions(path.join(folderPath, localCoverFileName))
@@ -436,6 +491,8 @@ function parseWorkFolder(folderName: string, sortOrder: number) {
     title: parsed.title,
     type: parsed.type,
     format: parsed.format,
+    archiveId: parsed.archiveId,
+    colophon: parsed.colophon,
     date: String(parsed.date),
     displayDate: parsedDate.displayDate,
     year: parsedDate.year,
@@ -461,9 +518,33 @@ export function getAllWorks() {
     return [];
   }
 
-  return readdirSync(CONTENT_ROOT, { withFileTypes: true })
+  const works = readdirSync(CONTENT_ROOT, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
     .map((entry, index) => parseWorkFolder(entry.name, index));
+
+  const archiveIds = new Set<string>();
+  const sequencesByYear = new Map<string, number[]>();
+  for (const work of works) {
+    if (archiveIds.has(work.archiveId)) {
+      throw new Error(`Duplicate archive ID "${work.archiveId}".`);
+    }
+    archiveIds.add(work.archiveId);
+    const [, archiveYear, sequence] = work.archiveId.match(ARCHIVE_ID_PATTERN)!;
+    const yearSequences = sequencesByYear.get(archiveYear) ?? [];
+    yearSequences.push(Number(sequence));
+    sequencesByYear.set(archiveYear, yearSequences);
+  }
+
+  for (const [archiveYear, sequences] of sequencesByYear) {
+    sequences.sort((left, right) => left - right);
+    sequences.forEach((sequence, index) => {
+      if (sequence !== index + 1) {
+        throw new Error(`Archive IDs for year ${archiveYear} must be contiguous from 001.`);
+      }
+    });
+  }
+
+  return works;
 }
 
 export function getWorkFolderNameBySlug(slug: string) {

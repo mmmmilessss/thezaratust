@@ -2,6 +2,7 @@ type: music
 format: single
 title: 겨울방학
 date: 2025.08.25
+archiveId: ZRST-025-003
 project: none
 description: |
   오늘도 같은 회색 후드에 검은 면바지
@@ -23,6 +24,12 @@ description: |
   겨울의 바람은 낙엽을 뒤섞는다
   저 하얀 태양엔 휘황찬란 용이 날고
   무지개의 가시는 나의 열일곱을 찌른다
+
+credits: Written, produced, performed & engineered by CRYSTYN
+
+colophon:
+  format: SINGLE
+  runtime: 5:01
 
 links:
   soundcloud: https://soundcloud.com/crystalcrystyn/377e30e8-1cec-4534-9b94-593b7a12e7ea

@@ -22,6 +22,20 @@ export type WorkImage = {
   height: number;
 };
 
+export type ProjectColophonData = Partial<{
+  format: string;
+  runtime: string;
+  aspectRatio: string;
+  resolution: string;
+  camera: string;
+  location: string;
+  imageCount: string;
+  tracks: string;
+  material: string;
+  dimensions: string;
+  pieces: string;
+}>;
+
 export type Work = {
   title: string;
   year: number;
@@ -30,6 +44,8 @@ export type Work = {
   type: WorkCategory;
   format?: MusicFormat;
   slug: string;
+  archiveId: string;
+  colophon?: ProjectColophonData;
   project?: string;
   thumbnail: string;
   thumbnailWidth: number;
