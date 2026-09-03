@@ -12,6 +12,7 @@ import Image from "next/image";
 import AudioEmbed from "@/components/AudioEmbed";
 import MusicReactive from "@/components/MusicReactive";
 import ProjectColophon from "@/components/ProjectColophon";
+import LyricsPanel from "@/components/LyricsPanel";
 import { getTrackCredits } from "@/lib/track-credits";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -337,6 +338,8 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
               {spotifyEmbedUrl ? <AudioEmbed platform="spotify" src={spotifyEmbedUrl} uri={spotifyEmbedUrl.replace("https://open.spotify.com/embed/", "spotify:").replaceAll("/", ":")} title={work.title} /> : <AudioEmbed platform="soundcloud" src={soundCloudEmbedUrl!} title={work.title} />}
             </div>
           ) : null}
+
+          {work.lyrics?.length ? <LyricsPanel tracks={work.lyrics} /> : null}
 
           {availableLinks.length && !isMusicWork ? (
             <div className="mt-10 flex flex-col gap-3 text-xs font-gotham-medium sm:flex-row sm:flex-wrap sm:gap-6 sm:text-sm">

@@ -14,7 +14,12 @@ export type WorkLinks = Partial<{
   soundcloud: string;
 }>;
 
-export type MusicFormat = "album" | "ep" | "single";
+export type MusicFormat = "album" | "ep" | "single" | "double single";
+
+export type TrackLyrics = {
+  title: string;
+  lyrics: string;
+};
 
 export type WorkImage = {
   src: string;
@@ -58,6 +63,7 @@ export type Work = {
   previewImages?: string[];
   audioEnvelope?: string;
   links?: WorkLinks;
+  lyrics?: TrackLyrics[];
   sortDateValue: number;
   sortOrder: number;
 };

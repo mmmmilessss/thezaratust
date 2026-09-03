@@ -10,6 +10,7 @@ import {
   type WorkCategory,
   type WorkImage,
   type WorkLinks,
+  type TrackLyrics,
 } from "@/types/work";
 import { sortWorks } from "@/lib/works";
 
@@ -57,7 +58,24 @@ function isWorkCategory(value: string): value is WorkCategory {
 }
 
 function isMusicFormat(value: string): value is MusicFormat {
-  return value === "album" || value === "ep" || value === "single";
+  return value === "album" || value === "ep" || value === "single" || value === "double single";
+}
+
+function getTrackLyrics(folderPath: string): TrackLyrics[] | undefined {
+  const lyricsPath = path.join(folderPath, "lyrics");
+  if (!existsSync(lyricsPath)) return undefined;
+
+  const tracks = readdirSync(lyricsPath)
+    .filter((fileName) => fileName.toLowerCase().endsWith(".txt"))
+    .sort((left, right) => left.localeCompare(right))
+    .flatMap((fileName) => {
+      const [titleLine = "", ...bodyLines] = readFileSync(path.join(lyricsPath, fileName), "utf8").split(/\r?\n/);
+      const title = titleLine.trim();
+      const lyrics = bodyLines.join("\n").trim();
+      return title && lyrics ? [{ title, lyrics }] : [];
+    });
+
+  return tracks.length ? tracks : undefined;
 }
 
 function parseScalar(rawValue: string) {
@@ -508,6 +526,7 @@ function parseWorkFolder(folderName: string, sortOrder: number) {
     previewImages: getPreviewImages(parsed.type, slug, images, parsed.links?.youtube),
     audioEnvelope: existsSync(audioEnvelopePath) ? `/bass-envelopes/${slug}.json` : undefined,
     links: parsed.links,
+    lyrics: getTrackLyrics(folderPath),
     sortDateValue: parsedDate.sortDateValue,
     sortOrder,
   } satisfies Work;
