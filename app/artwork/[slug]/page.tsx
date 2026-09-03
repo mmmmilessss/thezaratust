@@ -11,6 +11,8 @@ import Link from "next/link";
 import Image from "next/image";
 import AudioEmbed from "@/components/AudioEmbed";
 import MusicReactive from "@/components/MusicReactive";
+import TrackCredits from "@/components/TrackCredits";
+import { getTrackCredits } from "@/lib/track-credits";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -179,6 +181,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
         return { role: role.trim(), value: valueParts.join("|").trim() };
       })
     : [];
+  const trackCredits = getTrackCredits(work.slug);
   const projectName = isAssignedProject(work.project) ? work.project : null;
   const projectHref = projectName ? `/projects/${slugifyProjectName(projectName)}` : null;
   const categoryWorks = getWorksByCategory(work.type);
@@ -364,6 +367,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
           ) : null}
         </div>
       </div>
+      <TrackCredits tracks={trackCredits} />
       {artworkNavigation}
     </main>
   );
