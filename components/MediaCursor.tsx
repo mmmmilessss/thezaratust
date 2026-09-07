@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function MediaCursor() {
+  const pathname = usePathname();
   const [label, setLabel] = useState("");
   const ref = useRef<HTMLDivElement>(null);
   const target = useRef({ x: 0, y: 0 });
@@ -30,14 +32,24 @@ export default function MediaCursor() {
       setLabel(element?.dataset.cursorLabel ?? "");
     };
     const leave = () => setLabel("");
+    leave();
+    document.addEventListener("pointerout", leave);
+    document.addEventListener("click", leave, true);
+    window.addEventListener("blur", leave);
+    window.addEventListener("scroll", leave, true);
     window.addEventListener("pointermove", move, { passive: true });
     document.documentElement.addEventListener("pointerleave", leave);
     return () => {
+      document.removeEventListener("pointerout", leave);
+      document.removeEventListener("click", leave, true);
+      window.removeEventListener("blur", leave);
+      window.removeEventListener("scroll", leave, true);
       window.removeEventListener("pointermove", move);
       document.documentElement.removeEventListener("pointerleave", leave);
       if (frame.current) cancelAnimationFrame(frame.current);
+      frame.current = null;
     };
-  }, []);
+  }, [pathname]);
 
   return <div ref={ref} aria-hidden className={`pointer-events-none fixed left-0 top-0 z-[100] text-[9px] tracking-[0.08em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)] transition-opacity ${label ? "opacity-100" : "opacity-0"}`}>{label}</div>;
 }

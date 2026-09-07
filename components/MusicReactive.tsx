@@ -3,13 +3,15 @@
 import { useEffect, useRef } from "react";
 import { PLAYBACK_EVENT, type PlaybackState } from "@/lib/playback";
 
+import { sampleKick, type KickEnvelope } from "@/lib/bass-sync";
+
 type GlowColor = { red: number; green: number; blue: number };
-const envelopeCache = new Map<string, Promise<number[]>>();
+const envelopeCache = new Map<string, Promise<KickEnvelope>>();
 
 function loadEnvelope(path: string) {
   let request = envelopeCache.get(path);
   if (!request) {
-    request = fetch(path).then((response) => response.json()).then((data) => data.values ?? []);
+    request = fetch(path).then((response) => response.json());
     envelopeCache.set(path, request);
   }
   return request;
@@ -74,7 +76,7 @@ export default function MusicReactive({ envelope, colorSource, children, classNa
   useEffect(() => {
     const element = ref.current;
     if (!envelope || !element) return;
-    let values: number[] = []; let state: PlaybackState | null = null; let raf = 0; let level = 0; let cancelled = false;
+    let data: KickEnvelope | null = null; let state: PlaybackState | null = null; let raf = 0; let cancelled = false;
     let color: GlowColor = { red: 82, green: 128, blue: 148 };
     const renderGlow = (energy: number) => {
       if (energy < 0.004) {
@@ -92,14 +94,11 @@ export default function MusicReactive({ envelope, colorSource, children, classNa
     }
     const tick = () => {
       if (!state) return;
-      const position = state.positionMs + (state.isPlaying ? performance.now() - state.updatedAt : 0);
-      const target = state.isPlaying && !state.isBuffering ? values[Math.min(values.length - 1, Math.floor(position / 25))] ?? 0 : 0;
-      level += (target - level) * (target > level ? 0.26 : 0.15);
-      renderGlow(Math.pow(Math.max(0, level), 0.65));
-      if (state.isPlaying || level > .002) raf = requestAnimationFrame(tick);
+      renderGlow(sampleKick(data, state, performance.now()));
+      if (state.isPlaying && !state.isBuffering && performance.now() - state.updatedAt < 1500) raf = requestAnimationFrame(tick);
     };
-    void loadEnvelope(envelope).then((loadedValues) => { if (!cancelled) values = loadedValues; }).catch(() => undefined);
-    const onPlayback = (event: Event) => { state = (event as CustomEvent<PlaybackState>).detail; cancelAnimationFrame(raf); raf = requestAnimationFrame(tick); };
+    void loadEnvelope(envelope).then((loadedValues) => { if (!cancelled) data = loadedValues; }).catch(() => undefined);
+    const onPlayback = (event: Event) => { state = (event as CustomEvent<PlaybackState>).detail; cancelAnimationFrame(raf); tick(); };
     addEventListener(PLAYBACK_EVENT, onPlayback); return () => { cancelled = true; removeEventListener(PLAYBACK_EVENT, onPlayback); cancelAnimationFrame(raf); element.style.filter = "none"; };
   }, [colorSource, envelope]);
   return <div ref={ref} className={className}>{children}</div>;
