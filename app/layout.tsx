@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/artist";
 import Header from "../components/Header";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
@@ -23,12 +24,15 @@ const appleSdGothicNeoBold = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.zaratust.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "ZARATUST",
     template: "%s | ZARATUST",
   },
   description: "Music, photography, video, and visual work by CRYSTYN, with film by PARK GEON WOO.",
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
   icons: {
     icon: "/favicon.ico",
   },

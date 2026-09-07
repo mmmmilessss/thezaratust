@@ -1,3 +1,5 @@
+import JsonLd from "@/components/JsonLd";
+import { SITE_URL } from "@/lib/artist";
 import NavigationLinks from "@/components/NavigationLinks";
 import WorkGrid from "@/components/WorkGrid";
 import { getAllWorks } from "@/lib/works-content";
@@ -31,6 +33,11 @@ export default function HomePage() {
 
   return (
     <main>
+      <JsonLd data={{ "@context": "https://schema.org", "@graph": [
+        { "@type": "WebSite", "@id": `${SITE_URL}/#website`, url: SITE_URL, name: "ZARATUST",
+          creator: { "@id": `${SITE_URL}/#person` } },
+        { "@type": "Person", "@id": `${SITE_URL}/#person`, name: "PARK GEON WOO", url: `${SITE_URL}/about` },
+      ] }} />
       <section id="home-hero" className="relative -mt-24 sm:-mt-28">
         <div className="pointer-events-none absolute right-[3%] top-[75%] z-20 hidden -translate-y-1/2 md:block">
           <Image

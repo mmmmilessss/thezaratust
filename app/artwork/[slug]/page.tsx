@@ -1,3 +1,6 @@
+import JsonLd from "@/components/JsonLd";
+import { isCrystynRelease, musicArtists, musicDescription, musicSchema } from "@/lib/music-seo";
+import { createPageMetadata } from "@/lib/metadata";
 import {
   getAllWorkSlugs,
   getWorkBySlug,
@@ -124,6 +127,16 @@ export async function generateMetadata({
     return {};
   }
 
+  if (work.type === "music" && work.artists?.length) {
+    return createPageMetadata({
+      title: `${work.title} — ${musicArtists(work)}`,
+      absoluteTitle: true,
+      description: musicDescription(work),
+      path: `/artwork/${encodeURIComponent(work.slug)}`,
+      image: { url: `/artwork-og/${encodeURIComponent(work.slug)}`, width: 1200, height: 630, alt: `${work.title} cover artwork` },
+    });
+  }
+
   const title = `${work.title} — ZARATUST`;
   const creator = work.type === "film" ? "PARK GEON WOO" : "CRYSTYN";
   const description =
@@ -215,6 +228,10 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
   const metadataLine = (
     <>
       <span>{baseMetaLabel}</span>
+      {isCrystynRelease(work) ? <>
+        <span> · </span><Link href="/crystyn" className="transition-opacity hover:opacity-50">CRYSTYN</Link>
+        {work.artists?.filter((name) => name !== "CRYSTYN").map((name) => <span key={name}> &amp; {name}</span>)}
+      </> : null}
       {projectName && projectHref ? (
         <>
           <span> · </span>
@@ -280,6 +297,7 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
 
   return (
     <main className="px-6 py-16 sm:px-10 sm:py-20 lg:px-20">
+      {musicSchema(work) ? <JsonLd data={musicSchema(work)} /> : null}
       <div className="grid gap-10 md:grid-cols-2 md:gap-16">
         <div className="space-y-6">
           {isMusicWork ? (

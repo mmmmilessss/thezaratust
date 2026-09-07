@@ -48,6 +48,7 @@ export type Work = {
   displayDate: string;
   type: WorkCategory;
   format?: MusicFormat;
+  artists?: string[];
   slug: string;
   archiveId: string;
   colophon?: ProjectColophonData;

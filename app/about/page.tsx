@@ -1,3 +1,4 @@
+import { officialProfiles } from "@/lib/artist";
 import Image from "next/image";
 import Link from "next/link";
 import { createPageMetadata } from "@/lib/metadata";
@@ -8,38 +9,6 @@ export const metadata = createPageMetadata({
   path: "/about",
 });
 
-const socialLinks = [
-  {
-    label: "Instagram",
-    href: "https://www.instagram.com/changwonthesoloist/",
-    iconSrc: "/icons/instagram.svg",
-  },
-  {
-    label: "YouTube",
-    href: "https://www.youtube.com/@shawnabloh",
-    iconSrc: "/icons/youtube.svg",
-  },
-  {
-    label: "SoundCloud",
-    href: "https://soundcloud.com/crystalcrystyn",
-    iconSrc: "/icons/soundcloud.svg",
-  },
-  {
-    label: "Spotify",
-    href: "https://open.spotify.com/artist/3BauZYcHO8tEcLKjj75InQ",
-    iconSrc: "/icons/spotify.svg",
-  },
-  {
-    label: "Apple Music",
-    href: "https://music.apple.com/kr/artist/crystyn/1879705589",
-    iconSrc: "/icons/applemusic.svg",
-  },
-  {
-    label: "Melon",
-    href: "https://www.melon.com/artist/timeline.htm?artistId=4823567",
-    iconSrc: "/icons/melon.png",
-  },
-] as const;
 
 export default function AboutPage() {
   return (
@@ -60,7 +29,7 @@ export default function AboutPage() {
               <br />
               spanning sound, moving image, photography, and related forms.
             </p>
-            <p>Music is released under the name CRYSTYN.</p>
+            <p>Music is released under the name <Link href="/crystyn" className="hover:opacity-60">CRYSTYN</Link>.</p>
             <p>Based in Seoul, South Korea.</p>
           </div>
 
@@ -70,13 +39,13 @@ export default function AboutPage() {
               <br />
               사운드, 영상, 사진을 비롯한 다양한 시각·청각 작업을 전개한다.
             </p>
-            <p>음악은 CRYSTYN이라는 이름으로 활동한다.</p>
+            <p>음악은 <Link href="/crystyn" className="hover:opacity-60">CRYSTYN</Link>이라는 이름으로 활동한다.</p>
             <p>대한민국 서울을 기반으로 활동한다.</p>
           </div>
         </div>
 
         <div className="space-y-5">
-          {socialLinks.map((item) => {
+          {officialProfiles.map((item) => {
             return (
               <Link
                 key={item.label}

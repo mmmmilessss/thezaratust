@@ -203,6 +203,7 @@ function parseYamlFile(filePath: string) {
   const result: {
     type?: string;
     format?: MusicFormat;
+    artists?: string[];
     title?: string;
     date?: string;
     project?: string;
@@ -276,6 +277,12 @@ function parseYamlFile(filePath: string) {
 
       const key = trimmed.slice(0, separatorIndex).trim();
       const value = parseScalar(trimmed.slice(separatorIndex + 1));
+
+      if (key === "artists") {
+        result.artists = value.split(",").map((name) => name.trim()).filter(Boolean);
+        currentSection = null;
+        continue;
+      }
 
       if (key === "project") {
         result.project = value || undefined;
@@ -509,6 +516,7 @@ function parseWorkFolder(folderName: string, sortOrder: number) {
     title: parsed.title,
     type: parsed.type,
     format: parsed.format,
+    artists: parsed.artists,
     archiveId: parsed.archiveId,
     colophon: parsed.colophon,
     date: String(parsed.date),

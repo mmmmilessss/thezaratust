@@ -1,3 +1,4 @@
+import Link from "next/link";
 import WorkGrid from "@/components/WorkGrid";
 import { getWorksByCategory } from "@/lib/works-content";
 import { WORK_CATEGORIES, type WorkCategory } from "@/types/work";
@@ -51,6 +52,7 @@ export default async function WorkCategoryPage({
     <main className="px-6 py-16 sm:px-10 sm:py-20">
       <section className="mb-10">
         <h1 className="text-base sm:text-xl">{category.toUpperCase()}</h1>
+        {category === "music" ? <p className="mt-3 text-xs opacity-60"><Link href="/crystyn" className="hover:opacity-60">CRYSTYN</Link></p> : null}
       </section>
 
       <WorkGrid
