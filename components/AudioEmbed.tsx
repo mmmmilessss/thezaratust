@@ -48,8 +48,11 @@ export default function AudioEmbed({ platform, src, title, uri }: { platform: "s
       let poll: ReturnType<typeof setInterval> | undefined;
       let position = 0, duration = 0, playing = false, trackId = "";
       let revision = 0;
+      let lastPosition = 0, lastAdvance = 0;
       const emit = () => {
-        if (!cancelled) publishPlayback({ platform, trackId, isPlaying: playing, isBuffering: false, positionMs: position, durationMs: duration, playbackRate: 1 });
+        if (position !== lastPosition) { lastPosition = position; lastAdvance = performance.now(); }
+        const isBuffering = playing && (position === 0 || performance.now() - lastAdvance > 400);
+        if (!cancelled) publishPlayback({ platform, trackId, isPlaying: playing, isBuffering, positionMs: position, durationMs: duration, playbackRate: 1 });
       };
       const refresh = () => {
         const version = ++revision;
@@ -124,5 +127,5 @@ export default function AudioEmbed({ platform, src, title, uri }: { platform: "s
       </div>
     );
   }
-  return <iframe ref={iframe} src={src} title={`${title} SoundCloud player`} width="100%" height="166" allow="autoplay" loading="lazy" className="w-full border-0" />;
+  return <iframe ref={iframe} src={src} title={`${title} SoundCloud player`} width="100%" height="166" allow="autoplay; encrypted-media" loading="lazy" className="w-full border-0" />;
 }

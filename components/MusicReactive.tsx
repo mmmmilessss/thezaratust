@@ -3,10 +3,10 @@
 import { useEffect, useRef } from "react";
 import { PLAYBACK_EVENT, type PlaybackState } from "@/lib/playback";
 
-import { sampleKick, type KickEnvelope } from "@/lib/bass-sync";
+import { sampleKick, type KickTimelines } from "@/lib/bass-sync";
 
 type GlowColor = { red: number; green: number; blue: number };
-const envelopeCache = new Map<string, Promise<KickEnvelope>>();
+const envelopeCache = new Map<string, Promise<KickTimelines>>();
 
 function loadEnvelope(path: string) {
   let request = envelopeCache.get(path);
@@ -76,7 +76,7 @@ export default function MusicReactive({ envelope, colorSource, children, classNa
   useEffect(() => {
     const element = ref.current;
     if (!envelope || !element) return;
-    let data: KickEnvelope | null = null; let state: PlaybackState | null = null; let raf = 0; let cancelled = false;
+    let data: KickTimelines | null = null; let state: PlaybackState | null = null; let raf = 0; let cancelled = false;
     let color: GlowColor = { red: 82, green: 128, blue: 148 };
     const renderGlow = (energy: number) => {
       if (energy < 0.004) {

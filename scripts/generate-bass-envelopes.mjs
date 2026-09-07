@@ -1,10 +1,40 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
-import { spawnSync } from "node:child_process";
-
-const root=process.cwd(), sourceRoot=join(root,".cache/zaratust-audio"), outDir=join(root,"public/bass-envelopes");
-if(!existsSync(sourceRoot)){console.log("No cached analysis audio.");process.exit(0);} mkdirSync(outDir,{recursive:true});
-const audio=readdirSync(sourceRoot).filter((name)=>/\.analysis\.(mp3|m4a|wav|aac|flac|ogg)$/i.test(name));
-function wavSamples(buffer){const index=buffer.indexOf(Buffer.from("data"));if(index<0)throw new Error("Invalid WAV");const start=index+8;return new Int16Array(buffer.buffer,buffer.byteOffset+start,Math.floor((buffer.length-start)/2));}
-function biquad(samples,rate,kind,frequency){const q=Math.SQRT1_2,w=2*Math.PI*frequency/rate,c=Math.cos(w),s=Math.sin(w),alpha=s/(2*q);let b0=kind==="low"?(1-c)/2:(1+c)/2,b1=kind==="low"?1-c:-(1+c),b2=b0,a0=1+alpha,a1=-2*c,a2=1-alpha;b0/=a0;b1/=a0;b2/=a0;a1/=a0;a2/=a0;const out=new Float32Array(samples.length);let x1=0,x2=0,y1=0,y2=0;for(let i=0;i<samples.length;i++){const x=samples[i]/32768,y=b0*x+b1*x1+b2*x2-a1*y1-a2*y2;out[i]=y;x2=x1;x1=x;y2=y1;y1=y;}return out;}
-for(const name of audio){const source=join(sourceRoot,name),slug=name.replace(/\.analysis\.[^.]+$/i,""),output=join(outDir,`${slug}.json`);if(existsSync(output)&&JSON.parse(readFileSync(output,"utf8")).version===2&&statSync(output).mtimeMs>=statSync(source).mtimeMs){console.log(`CACHED ${slug}`);continue;}const temporary=join("/tmp",`zaratust-${slug}-${process.pid}.wav`);const converted=spawnSync("afconvert",["-f","WAVE","-d","LEI16@8000","-c","1",source,temporary],{encoding:"utf8"});if(converted.status!==0){console.warn(`Skipped ${slug}: ${converted.stderr}`);continue;}const pcm=wavSamples(readFileSync(temporary));unlinkSync(temporary);const band=biquad(biquad(pcm,8000,"high",40),8000,"low",120),windowSize=80,rms=[];for(let i=0;i<band.length;i+=windowSize){let sum=0,end=Math.min(band.length,i+windowSize);for(let j=i;j<end;j++)sum+=band[j]**2;rms.push(Math.sqrt(sum/(end-i)));}const onset=rms.map((value,index)=>Math.max(0,value-(rms[Math.max(0,index-3)]??0)));const sorted=[...onset].sort((a,b)=>a-b),ceiling=sorted[Math.floor(sorted.length*.98)]||1;let pulse=0;const values=onset.map(value=>{pulse=Math.max(Math.min(1,value/ceiling),pulse*Math.exp(-10/45));return Math.round(pulse*255)/255;});const metadataPath=join(sourceRoot,`${slug}.json`);const metadata=existsSync(metadataPath)?JSON.parse(readFileSync(metadataPath,"utf8")):{};const trackIds=metadata.sourceUrl?.startsWith("https://soundcloud.com/")?[metadata.sourceUrl]:[];writeFileSync(output,JSON.stringify({version:2,intervalMs:10,durationMs:pcm.length/8,trackIds,source:name,values}));console.log(`GENERATED ${slug}: ${values.length} samples`);}
+import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+const sourceRoot='.cache/zaratust-audio', outDir='public/bass-envelopes';
+mkdirSync(outDir,{recursive:true});
+function pcmSamples(buffer){
+ for(let at=12;at+8<=buffer.length;){const size=buffer.readUInt32LE(at+4);if(buffer.toString('ascii',at,at+4)==='data'){const samples=[];for(let i=at+8;i+1<Math.min(buffer.length,at+8+size);i+=2)samples.push(buffer.readInt16LE(i)/32768);return samples;}at+=8+size+(size%2);}
+ throw Error('WAV data chunk missing');
+}
+function filter(samples,kind,frequency){
+ const w=2*Math.PI*frequency/8000,c=Math.cos(w),alpha=Math.sin(w)/(2*Math.SQRT1_2),a0=1+alpha;
+ const b0=(kind==='low'?(1-c)/2:(1+c)/2)/a0,b1=(kind==='low'?1-c:-(1+c))/a0,b2=b0,a1=-2*c/a0,a2=(1-alpha)/a0;
+ const out=new Float32Array(samples.length);let x1=0,x2=0,y1=0,y2=0;
+ for(let i=0;i<samples.length;i++){const x=samples[i],y=b0*x+b1*x1+b2*x2-a1*y1-a2*y2;out[i]=y;x2=x1;x1=x;y2=y1;y1=y;}return out;
+}
+const generated=[];
+for(const file of readdirSync(sourceRoot).filter(n=>/\.analysis\.(mp3|m4a|wav|aac|flac|ogg)$/.test(n))){
+ const key=file.replace(/\.analysis\.[^.]+$/,''),metaPath=join(sourceRoot,`${key}.json`);
+ const meta=existsSync(metaPath)?JSON.parse(readFileSync(metaPath)):{};
+ const trackIds=meta.trackIds??(meta.sourceUrl?.startsWith('https://soundcloud.com/')?[meta.sourceUrl]:[]);
+ if(!trackIds.length)continue;
+ const temporary=join('/tmp',`zaratust-kick-${process.pid}.wav`);
+ const result=spawnSync('afconvert',['-f','WAVE','-d','LEI16@8000','-c','1',join(sourceRoot,file),temporary],{encoding:'utf8'});
+ if(result.status!==0)throw Error(`${key}: ${result.stderr}`);
+ const pcm=pcmSamples(readFileSync(temporary));unlinkSync(temporary);
+ const band=filter(filter(pcm,'high',40),'low',120),rms=[];
+ for(let i=0;i<band.length;i+=80){let sum=0,end=Math.min(band.length,i+80);for(let j=i;j<end;j++)sum+=band[j]**2;rms.push(Math.sqrt(sum/(end-i)));}
+ const onset=rms.map((v,i)=>Math.max(0,v-rms[Math.max(0,i-3)]));
+ const sorted=[...onset].sort((a,b)=>a-b),ceiling=sorted[Math.floor(sorted.length*.98)]||1;
+ let pulse=0;const values=onset.map(v=>{pulse=Math.max(Math.min(1,v/ceiling),pulse*Math.exp(-10/45));return Math.round(pulse*255)/255;});
+ const data={version:3,intervalMs:10,durationMs:pcm.length/8,trackIds,mode:meta.mode??'full',source:file,values};
+ generated.push({key,data});
+}
+const releaseKeys=readdirSync(sourceRoot).filter(n=>n.endsWith('.tracks.json')).map(n=>n.replace('.tracks.json',''));
+for(const release of releaseKeys){
+ const tracks=generated.filter(x=>x.key===release||x.key.startsWith(`${release}-`)).map(x=>x.data);
+ writeFileSync(join(outDir,`${release}.json`),JSON.stringify({version:3,tracks}));
+ console.log(`${release}: ${tracks.length} track timelines`);
+}
+for(const {key,data} of generated){if(releaseKeys.some(r=>key===r||key.startsWith(`${r}-`)))continue;writeFileSync(join(outDir,`${key}.json`),JSON.stringify(data));console.log(`${key}: full track`);}
