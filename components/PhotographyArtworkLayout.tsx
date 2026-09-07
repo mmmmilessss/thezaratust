@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import MasonryGrid from "@/components/MasonryGrid";
 import type { WorkImage } from "@/types/work";
+import ProgressiveImage from "@/components/ProgressiveImage";
 
 type Props = { category: ReactNode; title: string; metadata: ReactNode; description?: string; images: WorkImage[]; colophon?: ReactNode; navigation?: ReactNode };
 
@@ -30,15 +30,15 @@ export default function PhotographyArtworkLayout({ category, title, metadata, de
 
   const imageButton = (image: WorkImage, index: number, eager = false) => (
     <button key={image.src} type="button" onClick={() => setActiveIndex(index)} className="group block w-full cursor-zoom-in text-left" aria-label={`${title} image ${index + 1} 원본 보기`}>
-      <Image
+      <ProgressiveImage
         src={image.src}
         alt={`${title} image ${index + 1}`}
         width={image.width}
         height={image.height}
-        quality={88}
         sizes={index === 0 ? "(max-width: 767px) calc(100vw - 3rem), 50vw" : "(max-width: 639px) 50vw, (max-width: 1023px) 50vw, 33vw"}
         loading={eager ? "eager" : "lazy"}
-        className="block h-auto w-full transition-opacity duration-200 group-hover:opacity-90"
+        wrapperClassName="block w-full"
+        className="h-auto w-full transition-opacity duration-200 group-hover:opacity-90"
       />
     </button>
   );

@@ -4,6 +4,16 @@ import { useEffect, useRef } from "react";
 import { PLAYBACK_EVENT, type PlaybackState } from "@/lib/playback";
 
 type GlowColor = { red: number; green: number; blue: number };
+const envelopeCache = new Map<string, Promise<number[]>>();
+
+function loadEnvelope(path: string) {
+  let request = envelopeCache.get(path);
+  if (!request) {
+    request = fetch(path).then((response) => response.json()).then((data) => data.values ?? []);
+    envelopeCache.set(path, request);
+  }
+  return request;
+}
 
 function enhanceExtractedColor({ red, green, blue }: GlowColor): GlowColor {
   const maximum = Math.max(red, green, blue);
@@ -64,7 +74,7 @@ export default function MusicReactive({ envelope, colorSource, children, classNa
   useEffect(() => {
     const element = ref.current;
     if (!envelope || !element) return;
-    let values: number[] = []; let state: PlaybackState | null = null; let raf = 0; let level = 0;
+    let values: number[] = []; let state: PlaybackState | null = null; let raf = 0; let level = 0; let cancelled = false;
     let color: GlowColor = { red: 82, green: 128, blue: 148 };
     const renderGlow = (energy: number) => {
       if (energy < 0.004) {
@@ -76,7 +86,10 @@ export default function MusicReactive({ envelope, colorSource, children, classNa
       element.style.filter = `drop-shadow(0 0 ${blur.toFixed(1)}px rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${alpha.toFixed(3)})) drop-shadow(0 0 ${(blur * 1.55).toFixed(1)}px rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${(energy * 0.14).toFixed(3)}))`;
     };
     renderGlow(0);
-    if (colorSource) void extractGlowColor(colorSource).then((value) => { color = value; renderGlow(0); }).catch(() => undefined);
+    if (colorSource) {
+      const optimizedSource = `/_next/image?url=${encodeURIComponent(colorSource)}&w=64&q=25`;
+      void extractGlowColor(optimizedSource).then((value) => { color = value; renderGlow(0); }).catch(() => undefined);
+    }
     const tick = () => {
       if (!state) return;
       const position = state.positionMs + (state.isPlaying ? performance.now() - state.updatedAt : 0);
@@ -85,8 +98,9 @@ export default function MusicReactive({ envelope, colorSource, children, classNa
       renderGlow(Math.pow(Math.max(0, level), 0.65));
       if (state.isPlaying || level > .002) raf = requestAnimationFrame(tick);
     };
-    const onPlayback = async (event: Event) => { state = (event as CustomEvent<PlaybackState>).detail; if (!values.length) values = (await fetch(envelope).then((r) => r.json())).values ?? []; cancelAnimationFrame(raf); raf = requestAnimationFrame(tick); };
-    addEventListener(PLAYBACK_EVENT, onPlayback); return () => { removeEventListener(PLAYBACK_EVENT, onPlayback); cancelAnimationFrame(raf); element.style.filter = "none"; };
+    void loadEnvelope(envelope).then((loadedValues) => { if (!cancelled) values = loadedValues; }).catch(() => undefined);
+    const onPlayback = (event: Event) => { state = (event as CustomEvent<PlaybackState>).detail; cancelAnimationFrame(raf); raf = requestAnimationFrame(tick); };
+    addEventListener(PLAYBACK_EVENT, onPlayback); return () => { cancelled = true; removeEventListener(PLAYBACK_EVENT, onPlayback); cancelAnimationFrame(raf); element.style.filter = "none"; };
   }, [colorSource, envelope]);
   return <div ref={ref} className={className}>{children}</div>;
 }

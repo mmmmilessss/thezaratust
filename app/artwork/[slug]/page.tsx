@@ -1,5 +1,5 @@
 import JsonLd from "@/components/JsonLd";
-import { isCrystynRelease, musicArtists, musicDescription, musicSchema } from "@/lib/music-seo";
+import { musicArtists, musicDescription, musicSchema } from "@/lib/music-seo";
 import { createPageMetadata } from "@/lib/metadata";
 import {
   getAllWorkSlugs,
@@ -11,7 +11,7 @@ import MusicArtworkLaunch from "@/components/MusicArtworkLaunch";
 import PhotographyArtworkLayout from "@/components/PhotographyArtworkLayout";
 import { isAssignedProject, slugifyProjectName } from "@/lib/works";
 import Link from "next/link";
-import Image from "next/image";
+import ProgressiveImage from "@/components/ProgressiveImage";
 import AudioEmbed from "@/components/AudioEmbed";
 import MusicReactive from "@/components/MusicReactive";
 import ProjectColophon from "@/components/ProjectColophon";
@@ -228,10 +228,6 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
   const metadataLine = (
     <>
       <span>{baseMetaLabel}</span>
-      {isCrystynRelease(work) ? <>
-        <span> · </span><Link href="/crystyn" className="transition-opacity hover:opacity-50">CRYSTYN</Link>
-        {work.artists?.filter((name) => name !== "CRYSTYN").map((name) => <span key={name}> &amp; {name}</span>)}
-      </> : null}
       {projectName && projectHref ? (
         <>
           <span> · </span>
@@ -310,30 +306,30 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
               audioEnvelope={work.audioEnvelope}
             />
           ) : (
-            <Image
+            <ProgressiveImage
               src={mainImage.src}
               alt={work.title}
               width={mainImage.width}
               height={mainImage.height}
-              quality={88}
               sizes="(max-width: 767px) calc(100vw - 3rem), 50vw"
               loading="eager"
-              className="block max-h-[80vh] h-auto w-auto max-w-full"
+              wrapperClassName="block w-fit max-w-full"
+              className="max-h-[80vh] h-auto w-auto max-w-full"
             />
           )}
 
           {detailImages.length > 0
               ? detailImages.map((image, index) => (
-                <Image
+                <ProgressiveImage
                   key={image.src}
                   src={image.src}
                   alt={`${work.title} image ${index + 2}`}
                   width={image.width}
                   height={image.height}
-                  quality={88}
                   sizes="(max-width: 767px) calc(100vw - 3rem), 50vw"
                   loading="lazy"
-                  className="block max-h-[80vh] h-auto w-auto max-w-full"
+                  wrapperClassName="block w-fit max-w-full"
+                  className="max-h-[80vh] h-auto w-auto max-w-full"
                 />
               ))
             : null}

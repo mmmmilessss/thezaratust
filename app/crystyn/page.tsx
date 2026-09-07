@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import portrait from "@/public/images/crystyn-artist.jpg";
 import JsonLd from "@/components/JsonLd";
@@ -7,6 +6,7 @@ import { createPageMetadata } from "@/lib/metadata";
 import { sortWorks } from "@/lib/works";
 import { getAllWorks } from "@/lib/works-content";
 import { isCrystynRelease, musicEntityId, musicArtists } from "@/lib/music-seo";
+import ProgressiveImage from "@/components/ProgressiveImage";
 
 export const metadata = createPageMetadata({
   title: "CRYSTYN — Artist & Producer", absoluteTitle: true,
@@ -34,7 +34,7 @@ export default function CrystynPage() {
         <div>
           <h1 className="mb-5 text-2xl font-gotham-bold sm:text-3xl">CRYSTYN</h1>
           <p className="mb-8 max-w-sm text-xs leading-6 normal-case tracking-[0.02em] sm:text-sm">CRYSTYN is an artist and producer based in Seoul, South Korea.</p>
-          <Image src={portrait} alt="CRYSTYN artist portrait" sizes="(max-width: 767px) calc(100vw - 3rem), 400px" className="h-auto w-full max-w-sm" />
+          <ProgressiveImage src={portrait} alt="CRYSTYN artist portrait" sizes="(max-width: 767px) calc(100vw - 3rem), 400px" wrapperClassName="block w-full max-w-sm" className="h-auto w-full" />
         </div>
         <div className="space-y-12">
           <section aria-labelledby="discography">

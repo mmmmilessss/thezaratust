@@ -4,7 +4,7 @@ import NavigationLinks from "@/components/NavigationLinks";
 import WorkGrid from "@/components/WorkGrid";
 import { getAllWorks } from "@/lib/works-content";
 import Link from "next/link";
-import Image from "next/image";
+import ProgressiveImage from "@/components/ProgressiveImage";
 import { ArrowRight } from "lucide-react";
 import { createPageMetadata } from "@/lib/metadata";
 
@@ -40,33 +40,36 @@ export default function HomePage() {
       ] }} />
       <section id="home-hero" className="relative -mt-24 sm:-mt-28">
         <div className="pointer-events-none absolute right-[3%] top-[75%] z-20 hidden -translate-y-1/2 md:block">
-          <Image
+          <ProgressiveImage
             src="/logo.png"
             alt="thezaratust"
             width={320}
             height={128}
             priority
-            className="h-auto w-[27rem] object-contain brightness-0 invert [filter:drop-shadow(0_2px_6px_rgba(0,0,0,0.5))] lg:w-[30rem]"
+            wrapperClassName="block w-[27rem] lg:w-[30rem]"
+            className="h-auto w-full object-contain brightness-0 invert [filter:drop-shadow(0_2px_6px_rgba(0,0,0,0.5))]"
           />
         </div>
 
         <div className="hidden md:block">
-          <Image
+          <ProgressiveImage
             src="/images/hero-desktop.jpg"
             alt="thezaratust hero"
             width={1800}
             height={1200}
             priority
+            wrapperClassName="block w-full"
             className="h-auto w-full"
           />
         </div>
         <div className="md:hidden">
-          <Image
+          <ProgressiveImage
             src="/images/hero-mobile.jpg"
             alt="thezaratust hero"
             width={1400}
             height={1000}
             priority
+            wrapperClassName="block w-full"
             className="h-auto w-full"
           />
         </div>

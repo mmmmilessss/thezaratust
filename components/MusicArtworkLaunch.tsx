@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import type { WorkLinks } from "@/types/work";
 import MusicReactive from "@/components/MusicReactive";
+import ProgressiveImage from "@/components/ProgressiveImage";
 
 type MusicArtworkLaunchProps = {
   image: string;
@@ -41,15 +41,15 @@ export default function MusicArtworkLaunch({
         aria-expanded={isOpen}
         aria-label={`Open listening platforms for ${title}`}
       >
-        <MusicReactive envelope={audioEnvelope} colorSource={image}><Image
+        <MusicReactive envelope={audioEnvelope} colorSource={image}><ProgressiveImage
           src={image}
           alt={title}
           width={imageWidth}
           height={imageHeight}
-          quality={90}
           sizes="(max-width: 767px) calc(100vw - 3rem), min(50vw, 80vh)"
           loading="eager"
-          className="block h-auto w-full"
+          wrapperClassName="block w-full"
+          className="h-auto w-full"
         /></MusicReactive>
         <span className="absolute inset-0 flex items-center justify-center bg-black/0 text-sm font-gotham-bold opacity-0 transition group-hover:bg-black/35 group-hover:opacity-100">
           GO LISTEN

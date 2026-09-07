@@ -21,7 +21,7 @@ const contentSecurityPolicy = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
-    qualities: [75, 86, 88, 90],
+    qualities: [25, 75, 86, 88, 90],
     localPatterns: [
       {
         pathname: "/logo.png",

@@ -8,13 +8,10 @@ type Props = { src: string; alt: string; width: number; height: number; sizes: s
 export default function InteractiveWorkMedia({ src, alt, width, height, sizes, eager, previews = [] }: Props) {
   const [active, setActive] = useState(-1);
   const [enabled, setEnabled] = useState(false);
-  const [pixelPreviewSrc, setPixelPreviewSrc] = useState<string | null>(null);
   const reducedMotion = useRef(false);
   const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
   const loaded = loadedSrc === src;
-  const showPixelPreview = pixelPreviewSrc === src;
   const container = useRef<HTMLDivElement>(null);
-  const pixelPreviewTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const frame = useRef<number | null>(null);
   const target = useRef(0);
   const displayed = useRef(0);
@@ -29,14 +26,6 @@ export default function InteractiveWorkMedia({ src, alt, width, height, sizes, e
     const timer = setTimeout(update, 0);
     return () => { clearTimeout(timer); media.removeEventListener("change", update); reduced.removeEventListener("change", update); };
   }, [previews.length]);
-  useEffect(() => {
-    if (loaded) return;
-    pixelPreviewTimer.current = setTimeout(() => setPixelPreviewSrc(src), 100);
-    return () => {
-      if (pixelPreviewTimer.current) clearTimeout(pixelPreviewTimer.current);
-      pixelPreviewTimer.current = null;
-    };
-  }, [loaded, src]);
   const tick = (time: number) => {
     const delta = lastTime.current ? Math.min(50, time - lastTime.current) : 16.67;
     lastTime.current = time;
@@ -56,14 +45,12 @@ export default function InteractiveWorkMedia({ src, alt, width, height, sizes, e
   const enter = (event: React.PointerEvent<HTMLDivElement>) => { if (!enabled || !loaded) return; target.current = Math.min(1, Math.max(0, (event.clientX - event.currentTarget.getBoundingClientRect().left) / event.currentTarget.clientWidth)); displayed.current = target.current; currentIndex.current = Math.round(target.current * (previews.length - 1)); setActive(currentIndex.current); };
   const leave = () => { if (frame.current) cancelAnimationFrame(frame.current); frame.current = null; lastTime.current = 0; currentIndex.current = -1; setActive(-1); };
   const revealOriginal = () => {
-    if (pixelPreviewTimer.current) clearTimeout(pixelPreviewTimer.current);
-    pixelPreviewTimer.current = null;
     setLoadedSrc(src);
   };
   return (
     <div ref={container} className="relative bg-black" style={{ aspectRatio: `${width}/${height}` }} onPointerEnter={enter} onPointerMove={move} onPointerLeave={leave}>
-      <Image src={src} alt={alt} fill sizes={sizes} loading={eager ? "eager" : "lazy"} onLoad={revealOriginal} className={`object-cover transition-opacity duration-[180ms] ${loaded ? "opacity-100" : "opacity-0"}`} />
-      <Image src={src} alt="" fill sizes="24px" aria-hidden className={`pointer-events-none object-cover brightness-75 [image-rendering:pixelated] transition-opacity duration-[180ms] ${showPixelPreview && !loaded ? "opacity-[0.45]" : "opacity-0"}`} />
+      <Image src={src} alt="" fill sizes="32px" quality={25} loading={eager ? "eager" : "lazy"} aria-hidden className="pointer-events-none object-cover brightness-75 [image-rendering:pixelated]" />
+      <Image src={src} alt={alt} fill sizes={sizes} quality={75} loading={eager ? "eager" : "lazy"} onLoad={revealOriginal} className={`object-cover transition-opacity duration-150 ${loaded ? "opacity-100" : "opacity-0"}`} />
       {enabled && loaded && active >= 0 ? [active - 1, active, active + 1]
         .filter((index) => index >= 0 && index < previews.length)
         .map((index) => (
