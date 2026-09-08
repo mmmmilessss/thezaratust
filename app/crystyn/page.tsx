@@ -33,7 +33,11 @@ export default function CrystynPage() {
       <div className="grid max-w-5xl gap-12 md:grid-cols-[1fr_1.2fr] md:gap-20">
         <div>
           <h1 className="mb-5 text-2xl font-gotham-bold sm:text-3xl">CRYSTYN</h1>
-          <p className="mb-8 max-w-sm text-xs leading-6 normal-case tracking-[0.02em] sm:text-sm">CRYSTYN is an artist and producer based in Seoul, South Korea.</p>
+          <div className="mb-8 max-w-sm text-xs leading-6 normal-case tracking-[0.02em] sm:text-sm">
+            <p>CRYSTYN is an artist and producer based in Seoul, South Korea.</p>
+            <p className="mt-4">CRYSTYN — Artist / Producer</p>
+            <p>Artist Email: <a href="mailto:mmmmilessss@gmail.com" className="transition-opacity hover:opacity-60">mmmmilessss@gmail.com</a></p>
+          </div>
           <ProgressiveImage src={portrait} alt="CRYSTYN artist portrait" sizes="(max-width: 767px) calc(100vw - 3rem), 400px" wrapperClassName="block w-full max-w-sm" className="h-auto w-full" />
         </div>
         <div className="space-y-12">
