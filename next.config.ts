@@ -8,7 +8,7 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob:",
   "font-src 'self'",
   `connect-src 'self'${isDevelopment ? " ws: wss:" : ""} https://open.spotify.com https://api-partners.spotify.com https://w.soundcloud.com https://api.soundcloud.com`,
-  "frame-src https://www.youtube.com https://open.spotify.com https://w.soundcloud.com",
+  "frame-src https://www.youtube.com https://open.spotify.com https://w.soundcloud.com https://embed.music.apple.com",
   "media-src 'self' blob:",
   "worker-src 'self' blob:",
   "object-src 'none'",

@@ -112,7 +112,7 @@ export default function AudioEmbed({ platform, src, title, uri }: { platform: "s
     return () => { cancelled = true; activeController?.destroy(); publishPlayback({ platform, trackId: "", isPlaying: false, isBuffering: false, positionMs: 0, durationMs: 0, playbackRate: 1 }); window.clearTimeout(fallbackTimer); };
   }, [platform, src, uri]);
   if (platform === "apple") {
-    return <iframe src={src} title={`${title} Apple Music player`} width="100%" height="450" allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" loading="lazy" className="w-full border-0" />;
+    return <iframe src={src} title={`${title} Apple Music player`} width="100%" height="450" allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" loading="lazy" className="w-full border-0" />;
   }
   if (platform === "spotify") {
     return (
