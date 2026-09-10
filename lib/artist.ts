@@ -23,7 +23,7 @@ export const officialProfiles = [
   },
   {
     label: "Spotify",
-    href: "https://open.spotify.com/artist/3BauZYcHO8tEcLKjj75InQ",
+    href: "https://open.spotify.com/artist/0q9uxky197tAZpHJycwB2J",
     iconSrc: "/icons/spotify.svg",
   },
   {
@@ -37,4 +37,3 @@ export const officialProfiles = [
     iconSrc: "/icons/melon.png",
   },
 ] as const;
-
