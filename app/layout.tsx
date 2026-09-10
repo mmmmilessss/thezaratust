@@ -30,9 +30,14 @@ export const metadata: Metadata = {
     template: "%s | ZARATUST",
   },
   description: "Music, photography, video, and visual work by CRYSTYN, with film by PARK GEON WOO.",
-  verification: process.env.GOOGLE_SITE_VERIFICATION
-    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
-    : undefined,
+  verification: {
+    ...(process.env.GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+      : {}),
+    other: {
+      "naver-site-verification": "f8cacc41ecbe67728a38b26c4a6dce4b24d2c804",
+    },
+  },
   icons: {
     icon: "/favicon.ico",
   },
