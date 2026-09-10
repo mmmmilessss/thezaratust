@@ -24,6 +24,14 @@ const FIELD_ORDER: Array<[keyof ProjectColophonData, string]> = [
   ["location", "LOCATION"],
 ];
 
+function formatRuntime(value: string) {
+  const match = value.match(/^(\d+):([0-5]\d)$/);
+  if (!match) return value;
+
+  const minutes = Number(match[1]) + (Number(match[2]) >= 30 ? 1 : 0);
+  return `${minutes} MIN`;
+}
+
 function SimpleCredit({ credit }: { credit: string }) {
   const match = credit.match(/^(.*\bby)\s+(.+)$/i);
   if (!match) return <span>{credit}</span>;
@@ -53,7 +61,7 @@ function CreditContent({ credits }: { credits: string }) {
 export default function ProjectColophon({ archiveId, data, credits, tracks = [] }: ProjectColophonProps) {
   const fields = FIELD_ORDER.flatMap(([key, label]) => {
     const value = data?.[key];
-    return value ? [{ label, value }] : [];
+    return value ? [{ label, value: key === "runtime" ? formatRuntime(value) : value }] : [];
   });
   const hasCredits = Boolean(credits || tracks.length);
 

@@ -16,6 +16,7 @@ export const metadata = createPageMetadata({
 });
 
 const SELECTED_WORK_SLUGS = [
+  "prism",
   "situation",
   "tiny-thoughts-club",
   "film-the-free-trial",

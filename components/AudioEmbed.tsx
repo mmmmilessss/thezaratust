@@ -35,12 +35,14 @@ function getSpotifyApi() {
   return spotifyApiPromise;
 }
 
-export default function AudioEmbed({ platform, src, title, uri }: { platform: "spotify" | "soundcloud"; src: string; title: string; uri?: string }) {
+export default function AudioEmbed({ platform, src, title, uri }: { platform: "spotify" | "soundcloud" | "apple"; src: string; title: string; uri?: string }) {
   const iframe = useRef<HTMLIFrameElement>(null);
   const spotify = useRef<HTMLDivElement>(null);
   const [spotifyReady, setSpotifyReady] = useState(false);
   const [spotifyFallback, setSpotifyFallback] = useState(false);
   useEffect(() => {
+    if (platform === "apple") return;
+
     if (platform === "soundcloud") {
       loadScript("https://w.soundcloud.com/player/api.js");
       let cancelled = false;
@@ -109,6 +111,9 @@ export default function AudioEmbed({ platform, src, title, uri }: { platform: "s
     });
     return () => { cancelled = true; activeController?.destroy(); publishPlayback({ platform, trackId: "", isPlaying: false, isBuffering: false, positionMs: 0, durationMs: 0, playbackRate: 1 }); window.clearTimeout(fallbackTimer); };
   }, [platform, src, uri]);
+  if (platform === "apple") {
+    return <iframe src={src} title={`${title} Apple Music player`} width="100%" height="450" allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" loading="lazy" className="w-full border-0" />;
+  }
   if (platform === "spotify") {
     return (
       <div className="min-h-[352px] w-full" aria-label={`${title} Spotify player`}>

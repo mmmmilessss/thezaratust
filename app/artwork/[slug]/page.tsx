@@ -64,6 +64,25 @@ function getSpotifyEmbedUrl(spotifyUrl?: string) {
   }
 }
 
+function getAppleMusicEmbedUrl(appleMusicUrl?: string) {
+  if (!appleMusicUrl) {
+    return null;
+  }
+
+  try {
+    const url = new URL(appleMusicUrl);
+
+    if (!url.hostname.endsWith("music.apple.com")) {
+      return null;
+    }
+
+    url.hostname = "embed.music.apple.com";
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
 function getSoundCloudEmbedUrl(soundCloudUrl?: string) {
   if (!soundCloudUrl) {
     return null;
@@ -187,7 +206,8 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
   const isPhotographyWork = work.type === "photography";
   const isVideoWork = work.type === "video" || work.type === "film";
   const spotifyEmbedUrl = getSpotifyEmbedUrl(work.links?.spotify);
-  const soundCloudEmbedUrl = spotifyEmbedUrl ? null : getSoundCloudEmbedUrl(work.links?.soundcloud);
+  const appleMusicEmbedUrl = getAppleMusicEmbedUrl(work.links?.apple);
+  const soundCloudEmbedUrl = spotifyEmbedUrl || appleMusicEmbedUrl ? null : getSoundCloudEmbedUrl(work.links?.soundcloud);
   const youTubeEmbedUrl = getYouTubeEmbedUrl(work.links?.youtube);
   const trackCredits = getTrackCredits(work.slug);
   const projectName = isAssignedProject(work.project) ? work.project : null;
@@ -347,9 +367,9 @@ export default async function ArtworkPage({ params }: ArtworkPageProps) {
             </p>
           ) : null}
 
-          {spotifyEmbedUrl || soundCloudEmbedUrl ? (
+          {spotifyEmbedUrl || appleMusicEmbedUrl || soundCloudEmbedUrl ? (
             <div className="mt-10 w-full max-w-xl">
-              {spotifyEmbedUrl ? <AudioEmbed platform="spotify" src={spotifyEmbedUrl} uri={spotifyEmbedUrl.replace("https://open.spotify.com/embed/", "spotify:").replaceAll("/", ":")} title={work.title} /> : <AudioEmbed platform="soundcloud" src={soundCloudEmbedUrl!} title={work.title} />}
+              {spotifyEmbedUrl ? <AudioEmbed platform="spotify" src={spotifyEmbedUrl} uri={spotifyEmbedUrl.replace("https://open.spotify.com/embed/", "spotify:").replaceAll("/", ":")} title={work.title} /> : appleMusicEmbedUrl ? <AudioEmbed platform="apple" src={appleMusicEmbedUrl} title={work.title} /> : <AudioEmbed platform="soundcloud" src={soundCloudEmbedUrl!} title={work.title} />}
             </div>
           ) : null}
 
