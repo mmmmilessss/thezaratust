@@ -1,7 +1,7 @@
 import JsonLd from "@/components/JsonLd";
 import { SITE_URL } from "@/lib/artist";
 import NavigationLinks from "@/components/NavigationLinks";
-import WorkGrid from "@/components/WorkGrid";
+import SelectedWorksGrid from "@/components/SelectedWorksGrid";
 import { getAllWorks } from "@/lib/works-content";
 import Link from "next/link";
 import ProgressiveImage from "@/components/ProgressiveImage";
@@ -19,10 +19,10 @@ const SELECTED_WORK_SLUGS = [
   "prism",
   "situation",
   "tiny-thoughts-club",
-  "film-the-free-trial",
-  "film-thuglife",
   "acrobatic-001",
   "light003",
+  "film-the-free-trial",
+  "film-thuglife",
 ] as const;
 
 export default function HomePage() {
@@ -88,11 +88,7 @@ export default function HomePage() {
           <div className="mb-12">
             <h2 className="text-sm font-gotham-bold sm:text-lg">SELECTED WORKS</h2>
           </div>
-          <WorkGrid
-            works={selectedWorks}
-            mode="hover"
-            className="md:grid-cols-3 lg:grid-cols-3"
-          />
+          <SelectedWorksGrid works={selectedWorks} />
           <div className="mt-10 flex justify-end">
             <Link href="/archive" className="inline-flex items-center gap-2 text-[0.65rem] tracking-wide transition hover:opacity-60 sm:text-sm">
               VIEW FULL ARCHIVE
